@@ -21,7 +21,7 @@ Each project, animation, and detail is crafted with curiosity and a desire to bu
 ---
 
 ### 🌍 Live Portfolio
-[🔗 Visit Now](https://akhilparigoswami.github.io/akhilgoswami.github.io/)  
+[🔗 Visit Now](https://akhilpari.com/)  
 
 ---
 
