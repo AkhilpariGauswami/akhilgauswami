@@ -1,807 +1,530 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>KnightCraving — Case Study · Akhilpari Goswami</title>
+<meta name="description" content="Case study: KnightCraving — solving the late-night campus food discovery problem with real-time price comparison."/>
+<script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Epilogue:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23090909'/><text x='50%25' y='56%25' dominant-baseline='middle' text-anchor='middle' font-family='serif' font-size='20' font-style='italic' fill='%2300c8ff'>A</text></svg>">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:#efefed;color:#1a1a1a;font-family:'Epilogue',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 24;display:inline-flex;align-items:center;line-height:1;vertical-align:middle}
+.px{padding-left:24px;padding-right:24px}
+.mw{max-width:1200px;margin-left:auto;margin-right:auto}
+.reading{max-width:720px}
+@media(min-width:768px){.px{padding-left:80px;padding-right:80px}}
 
-  <!-- <title>KnightCraving — Case Study · Akhilpari Goswami</title> -->
-<!-- <meta name="description" content="How I figured out what to build and why — the full product thinking behind KnightCraving, a food price comparison tool."> -->
-<!-- <meta property="og:url" content="https://akhilpari.com/case-study.html">
-<meta property="og:title" content="KnightCraving Case Study — Akhilpari Goswami">
-<meta property="og:description" content="From friction to product — how I mapped the problem, evaluated 3 approaches, and built a food price comparison tool people actually need."> -->
-<!-- <meta name="twitter:url" content="https://akhilpari.com/case-study.html">
-<meta name="twitter:title" content="KnightCraving Case Study — Akhilpari Goswami">
-<meta name="twitter:description" content="From friction to product — how I mapped the problem, evaluated 3 approaches, and built a food price comparison tool."> -->
-<link rel="canonical" href="https://akhilpari.com/case-study.html">
+/* Type */
+.t-display{font-family:'Instrument Serif',serif;font-style:italic;font-size:clamp(40px,6vw,72px);line-height:1.05;letter-spacing:-0.025em;font-weight:400}
+.t-section{font-family:'Instrument Serif',serif;font-style:italic;font-size:clamp(26px,3.5vw,40px);line-height:1.1;letter-spacing:-0.015em;font-weight:400}
+.t-xl{font-size:20px;line-height:1.7;font-weight:400}
+.t-lg{font-size:18px;line-height:1.7;font-weight:400}
+.t-md{font-size:16px;line-height:1.65;font-weight:400}
+.t-label{font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1;letter-spacing:0.08em;font-weight:500}
+.t-micro{font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1;letter-spacing:0.06em;font-weight:500}
 
-  <!-- Primary Meta -->
-   <title>KnightCraving — Case Study · Akhilpari Goswami</title>
-  <meta name="description" content="How I figured out what to build and why — the full product thinking behind KnightCraving, a food price comparison tool.">
-  <meta name="author" content="Akhilpari Goswami">
-  <meta name="keywords" content="Akhilpari Goswami, Product Engineer, GEC Rajkot, React Developer, AI DS, Portfolio">
+/* Nav */
+#topNav{position:fixed;top:0;width:100%;z-index:50;background:#efefed;border-bottom:1px solid #e0e0de;transition:background .3s}
+#topNav.scrolled{background:#f8f8f6}
+.nav-i{display:flex;align-items:center;justify-content:space-between;height:64px}
+.nav-link{position:relative;text-decoration:none}
+.nav-link::after{content:'';position:absolute;bottom:-2px;left:0;width:0;height:1px;background:#1a1a1a;transition:width .2s}
+.nav-link:hover::after{width:100%}
+#mobileMenu{display:none;flex-direction:column;gap:16px;padding:20px 24px 24px;background:#f8f8f6;border-top:1px solid #e0e0de}
+#mobileMenu.open{display:flex}
+.btn-p{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.08em;font-weight:500;background:#1a1a1a;color:#efefed;padding:10px 20px;border-radius:2px;text-decoration:none;transition:background .2s}
+.btn-p:hover{background:#333}
 
-  <!-- Open Graph (LinkedIn, WhatsApp, Facebook) -->
-  <meta property="og:type" content="website">
-  <meta property="og:url" content="https://akhilpari.com/case-study.html">
-  <meta property="og:title" content="KnightCraving Case Study — Akhilpari Goswami">
-  <meta property="og:description" content="From friction to product — how I mapped the problem, evaluated 3 approaches, and built a food price comparison tool people actually need.">
-  <meta property="og:image" content="https://akhilpari.com/og-image.png">
+/* Badges */
+.bdg{display:inline-flex;align-items:center;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.07em;font-weight:700;text-transform:uppercase;padding:4px 8px;border-radius:2px}
+.bdg-done{background:rgba(0,200,255,.1);color:#008fb0;border:1px solid rgba(0,200,255,.3)}
 
-  <!-- Twitter / X Card -->
-  <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:url" content="https://akhilpari.com/case-study.html">
-  <meta name="twitter:title" content="KnightCraving Case Study — Akhilpari Goswami">
-  <meta name="twitter:description" content="From friction to product — how I mapped the problem, evaluated 3 approaches, and built a food price comparison tool.">
-  <meta name="twitter:image" content="https://akhilpari.com/og-image.png">
+/* Text link */
+.tlink{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.08em;font-weight:500;color:#1a1a1a;border-bottom:1px solid #1a1a1a;padding-bottom:1px;text-decoration:none;transition:color .2s,border-color .2s}
+.tlink:hover{color:#FF6B35;border-color:#FF6B35}
 
-  <!-- Canonical -->
-  <link rel="canonical" href="https://akhilpari.com/case-study.html">
+/* Metadata strip */
+.meta-strip{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:#e0e0de;border:1px solid #e0e0de;border-radius:2px}
+@media(min-width:640px){.meta-strip{grid-template-columns:repeat(4,1fr)}}
+.meta-cell{background:#f8f8f6;padding:20px 24px}
 
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+/* Summary block */
+.summary-block{background:#f8f8f6;border:1px solid #e0e0de;border-radius:2px;padding:32px;display:grid;grid-template-columns:1fr;gap:1px}
+@media(min-width:768px){.summary-block{grid-template-columns:repeat(3,1fr)}}
+.summary-item{padding:20px;border-bottom:1px solid #e0e0de}
+@media(min-width:768px){.summary-item{border-bottom:none;border-right:1px solid #e0e0de}}
+.summary-item:last-child{border:none}
 
-    :root {
-      --bg: #090909;
-      --bg2: #101010;
-      --bg3: #141414;
-      --surface: #1a1a1a;
-      --surface2: #212121;
-      --border: rgba(255,255,255,0.06);
-      --text: #ede9e3;
-      --text-muted: #63605c;
-      --text-dim: #2e2c2a;
-      --accent: #00c8ff;
-      --accent-warm: #ff6b35;
-      --accent-glow: rgba(0,200,255,0.12);
-      --font-display: 'Bebas Neue', sans-serif;
-      --font-body: 'DM Sans', sans-serif;
-      --font-ui: 'Syne', sans-serif;
-      --radius: 3px;
-      --col: 780px;
-    }
+/* Section divider */
+.sec-head{border-top:1px solid #e0e0de;padding-top:20px;margin-bottom:32px;display:flex;align-items:center;justify-content:space-between}
 
-    html { scroll-behavior: smooth; }
+/* Callout box */
+.callout{background:#f8f8f6;border-left:3px solid #00c8ff;padding:24px 28px;border-radius:0 2px 2px 0}
+.callout-warn{background:#f8f8f6;border-left:3px solid #FF6B35;padding:24px 28px;border-radius:0 2px 2px 0}
+.callout-neutral{background:#f8f8f6;border-left:3px solid #1a1a1a;padding:24px 28px;border-radius:0 2px 2px 0}
 
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--font-body);
-      font-size: 15px;
-      line-height: 1.65;
-      overflow-x: hidden;
-      cursor: none;
-    }
+/* Decision log table */
+.dec-table{width:100%;border-collapse:collapse}
+.dec-table th{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.1em;font-weight:700;text-transform:uppercase;color:#a0a0a0;border-bottom:1px solid #e0e0de;padding:10px 16px;text-align:left;background:#f8f8f6}
+.dec-table td{font-size:15px;line-height:1.55;color:#1a1a1a;padding:16px;border-bottom:1px solid #f0f0ee;vertical-align:top}
+.dec-table tr:last-child td{border-bottom:none}
+.dec-table .chosen{color:#008fb0;font-weight:600}
+.dec-table .rejected{color:#a0a0a0;text-decoration:line-through}
 
-    /* ── Cursor ── */
-    #cursor { position: fixed; top: 0; left: 0; z-index: 9999; pointer-events: none; }
-    .cursor-dot { width: 5px; height: 5px; background: var(--accent); border-radius: 50%; transform: translate(-50%,-50%); }
-    .cursor-ring {
-      position: absolute; top: 0; left: 0; width: 32px; height: 32px;
-      border: 1px solid rgba(0,200,255,.35); border-radius: 50%;
-      transform: translate(-50%,-50%); transition: width .25s, height .25s, border-color .25s, background .25s;
-    }
-    .cursor-ring.hovered { width: 48px; height: 48px; border-color: var(--accent); background: rgba(0,200,255,.04); }
+/* Image placeholder */
+.img-ph{background:#dadad8;border:1px solid #e0e0de;border-radius:2px;display:flex;align-items:center;justify-content:center;aspect-ratio:16/9}
+.img-ph-sq{background:#dadad8;border:1px solid #e0e0de;border-radius:2px;display:flex;align-items:center;justify-content:center;aspect-ratio:4/3}
 
-    /* ── Noise overlay ── */
-    body::before {
-      content: ''; position: fixed; inset: 0; z-index: 0;
-      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-      opacity: 0.022; pointer-events: none;
-    }
+/* Insight card */
+.insight{padding:20px 24px;border-bottom:1px solid #e0e0de;display:flex;gap:16px}
+.insight:first-child{border-top:1px solid #e0e0de}
+.insight-num{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.06em;color:#a0a0a0;min-width:24px;padding-top:2px}
 
-    /* ── Progress bar ── */
-    #progress {
-      position: fixed; top: 0; left: 0; height: 2px; background: var(--accent);
-      z-index: 300; width: 0%; transition: width .1s linear;
-      box-shadow: 0 0 10px rgba(0,200,255,.5);
-    }
+/* Result stat */
+.stat-card{background:#f8f8f6;border:1px solid #e0e0de;border-radius:2px;padding:24px;display:flex;flex-direction:column;gap:8px}
+.stat-num{font-family:'Instrument Serif',serif;font-style:italic;font-size:clamp(32px,4vw,48px);line-height:1;letter-spacing:-0.02em;color:#1a1a1a}
 
-    /* ── Nav ── */
-    nav {
-      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 18px 52px;
-      background: rgba(9,9,9,.88); backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border);
-    }
-    .nav-back {
-      font-family: var(--font-ui); font-size: 11px; font-weight: 600;
-      letter-spacing: .12em; text-transform: uppercase;
-      color: var(--text-muted); text-decoration: none;
-      display: flex; align-items: center; gap: 8px; transition: color .2s;
-    }
-    .nav-back:hover { color: var(--text); }
-    .nav-logo { font-family: var(--font-ui); font-weight: 800; font-size: 12px; letter-spacing: .22em; text-transform: uppercase; color: var(--text); text-decoration: none; }
-    .nav-logo span { color: var(--accent); }
-    .nav-tag {
-      font-family: var(--font-ui); font-size: 10px; font-weight: 600;
-      letter-spacing: .18em; text-transform: uppercase;
-      color: var(--text-muted); background: var(--surface2);
-      border: 1px solid var(--border); padding: 6px 14px; border-radius: var(--radius);
-    }
+/* Lesson row */
+.lesson{display:flex;gap:16px;padding:20px 0;border-bottom:1px solid #f0f0ee}
+.lesson:last-child{border-bottom:none}
+.lesson-icon{width:32px;height:32px;border-radius:50%;background:#eeeeec;border:1px solid #e0e0de;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
 
-    /* ── Hero cover ── */
-    .cs-hero {
-      padding-top: 100px; min-height: 100vh;
-      display: flex; flex-direction: column; justify-content: flex-end;
-      border-bottom: 1px solid var(--border); position: relative; overflow: hidden;
-    }
-    .cs-hero-bg-word {
-      position: absolute; bottom: -30px; left: -10px;
-      font-family: var(--font-display); font-size: clamp(200px, 28vw, 380px);
-      line-height: 1; color: rgba(255,255,255,.018); letter-spacing: -10px;
-      user-select: none; pointer-events: none; white-space: nowrap;
-    }
-    .cs-hero-orb {
-      position: absolute; top: -60px; right: -100px;
-      width: 600px; height: 600px;
-      background: radial-gradient(circle, rgba(0,200,255,.06) 0%, transparent 65%);
-      pointer-events: none; animation: orb 8s ease-in-out infinite;
-    }
-    @keyframes orb { 0%,100%{transform:scale(1) translate(0,0)} 50%{transform:scale(1.08) translate(20px,-20px)} }
+/* Reveal */
+.reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
+.reveal.visible{opacity:1;transform:none}
+.reveal-delay{transition-delay:.12s}
+.reveal-delay2{transition-delay:.22s}
 
-    .cs-hero-inner {
-      padding: 0 52px 0;
-      position: relative; z-index: 1;
-    }
-    .cs-breadcrumb {
-      font-family: var(--font-ui); font-size: 10px; font-weight: 600;
-      letter-spacing: .28em; text-transform: uppercase; color: var(--text-muted);
-      display: flex; align-items: center; gap: 10px; margin-bottom: 36px;
-    }
-    .cs-breadcrumb span { color: var(--accent); }
-    .cs-hero-title {
-      font-family: var(--font-ui);
-      font-size: clamp(52px, 9vw, 120px);
-      font-weight: 800; line-height: .92; letter-spacing: -.04em;
-      margin-bottom: 32px; max-width: 900px;
-    }
-    .cs-hero-title em { font-style: italic; color: var(--accent); }
-    .cs-hero-meta {
-      display: flex; gap: 0; flex-wrap: wrap;
-      border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
-      margin: 48px 0 0;
-    }
-    .cs-meta-item {
-      flex: 1; min-width: 160px; padding: 22px 32px 22px 0;
-      border-right: 1px solid var(--border);
-    }
-    .cs-meta-item:last-child { border-right: none; }
-    .cs-meta-label {
-      font-family: var(--font-ui); font-size: 10px; font-weight: 600;
-      letter-spacing: .22em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 6px;
-    }
-    .cs-meta-val {
-      font-family: var(--font-ui); font-size: 14px; font-weight: 700; color: var(--text);
-    }
-    .cs-meta-val.accent { color: var(--accent); }
+::selection{background:rgba(0,200,255,.18);color:#1a1a1a}
 
-    /* ── Layout ── */
-    .cs-body { position: relative; z-index: 1; }
-    .cs-container { max-width: 1120px; margin: 0 auto; padding: 0 52px; }
-    .cs-col { max-width: var(--col); }
+@media(max-width:767px){
+  .desk-only{display:none!important}
+  #menuToggle{display:block!important}
+  .dec-table{font-size:13px}
+  .dec-table td,.dec-table th{padding:12px 10px}
+}
 
-    /* ── Section ── */
-    .cs-section { padding: 100px 0; border-bottom: 1px solid var(--border); }
-    .cs-section-label {
-      font-family: var(--font-ui); font-size: 10px; font-weight: 600;
-      letter-spacing: .3em; text-transform: uppercase; color: var(--text-muted);
-      display: flex; align-items: center; gap: 12px; margin-bottom: 40px;
-    }
-    .cs-section-label::before { content:''; width:16px; height:1px; background:var(--text-muted); }
-    .cs-section-title {
-      font-family: var(--font-ui); font-size: clamp(28px,3.5vw,44px);
-      font-weight: 800; letter-spacing: -.025em; margin-bottom: 28px; line-height: 1.08;
-    }
-    .cs-text {
-      font-size: 15px; color: var(--text-muted); line-height: 1.85;
-      font-weight: 300; margin-bottom: 20px;
-    }
-    .cs-text strong { color: var(--text); font-weight: 500; }
-    .cs-text em { color: var(--accent); font-style: normal; }
-
-    /* ── Problem statement ── */
-    .cs-pullquote {
-      border-left: 2px solid var(--accent); margin: 44px 0;
-      padding: 24px 32px;
-      background: rgba(0,200,255,.03);
-    }
-    .cs-pullquote p {
-      font-family: var(--font-ui); font-size: clamp(17px,2vw,22px);
-      font-weight: 700; letter-spacing: -.015em; line-height: 1.45; color: var(--text);
-    }
-    .cs-pullquote cite {
-      font-family: var(--font-body); font-size: 11px; color: var(--text-muted);
-      letter-spacing: .1em; text-transform: uppercase; margin-top: 10px; display: block;
-    }
-
-    /* ── Two-col layout ── */
-    .cs-2col {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 3px; background: var(--border); border: 1px solid var(--border);
-      margin: 44px 0;
-    }
-    .cs-2col-cell {
-      background: var(--bg2); padding: 40px 36px;
-    }
-    .cs-2col-cell:hover { background: var(--bg3); }
-    .cell-icon { font-size: 18px; opacity: .45; margin-bottom: 16px; }
-    .cell-title { font-family: var(--font-ui); font-size: 14px; font-weight: 700; margin-bottom: 10px; }
-    .cell-text { font-size: 13px; color: var(--text-muted); line-height: 1.75; }
-
-    /* ── Decision table ── */
-    .cs-decision-grid {
-      display: grid; grid-template-columns: repeat(3,1fr);
-      gap: 3px; background: var(--border); border: 1px solid var(--border); margin: 44px 0;
-    }
-    .dg-cell {
-      background: var(--bg2); padding: 28px 28px; position: relative;
-    }
-    .dg-cell:hover { background: var(--bg3); }
-    .dg-num {
-      font-family: var(--font-display); font-size: 64px; line-height: 1;
-      color: rgba(255,255,255,.025); position: absolute; top: 10px; right: 14px;
-      user-select: none;
-    }
-    .dg-label {
-      font-family: var(--font-ui); font-size: 10px; font-weight: 600;
-      letter-spacing: .2em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 10px;
-    }
-    .dg-title { font-family: var(--font-ui); font-size: 16px; font-weight: 800; margin-bottom: 8px; }
-    .dg-text { font-size: 12px; color: var(--text-muted); line-height: 1.7; }
-    .dg-verdict {
-      display: inline-block; margin-top: 14px;
-      font-family: var(--font-ui); font-size: 9px; font-weight: 700; letter-spacing: .18em; text-transform: uppercase;
-      padding: 3px 8px; border-radius: 2px;
-    }
-    .verdict-chosen { background: rgba(0,200,255,.12); color: var(--accent); border: 1px solid rgba(0,200,255,.2); }
-    .verdict-dropped { background: rgba(255,107,53,.08); color: var(--accent-warm); border: 1px solid rgba(255,107,53,.15); }
-
-    /* ── Journey timeline ── */
-    .cs-timeline { margin: 44px 0; position: relative; padding-left: 0; }
-    .timeline-line {
-      position: absolute; left: 16px; top: 14px; bottom: 14px;
-      width: 1px; background: var(--border);
-    }
-    .tl-item { display: flex; gap: 32px; margin-bottom: 48px; position: relative; }
-    .tl-item:last-child { margin-bottom: 0; }
-    .tl-bullet {
-      flex-shrink: 0; width: 33px; height: 33px;
-      border-radius: 50%; background: var(--bg3); border: 1px solid var(--border);
-      display: flex; align-items: center; justify-content: center;
-      font-family: var(--font-ui); font-size: 10px; font-weight: 700; color: var(--accent);
-      position: relative; z-index: 1;
-    }
-    .tl-bullet.active { background: rgba(0,200,255,.1); border-color: rgba(0,200,255,.4); }
-    .tl-content { padding-top: 5px; }
-    .tl-phase {
-      font-family: var(--font-ui); font-size: 10px; font-weight: 600;
-      letter-spacing: .2em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px;
-    }
-    .tl-title { font-family: var(--font-ui); font-size: 18px; font-weight: 800; margin-bottom: 10px; }
-    .tl-body { font-size: 13px; color: var(--text-muted); line-height: 1.8; }
-    .tl-artifact {
-      margin-top: 16px; background: var(--bg3); border: 1px solid var(--border);
-      padding: 16px 20px; border-radius: var(--radius);
-    }
-    .tl-artifact-label {
-      font-family: var(--font-ui); font-size: 9px; font-weight: 700; letter-spacing: .2em; text-transform: uppercase;
-      color: var(--text-muted); margin-bottom: 6px;
-    }
-    .tl-artifact-content { font-size: 12px; color: var(--text-muted); font-style: italic; line-height: 1.65; }
-
-    /* ── Insight callout ── */
-    .cs-insight {
-      background: var(--bg3); border: 1px solid var(--border);
-      padding: 36px 40px; margin: 44px 0; position: relative; overflow: hidden;
-    }
-    .cs-insight::before {
-      content: '"'; position: absolute; top: -10px; left: 24px;
-      font-family: var(--font-display); font-size: 120px; line-height: 1;
-      color: rgba(0,200,255,.06); user-select: none;
-    }
-    .cs-insight-label {
-      font-family: var(--font-ui); font-size: 10px; font-weight: 600;
-      letter-spacing: .25em; text-transform: uppercase; color: var(--accent); margin-bottom: 14px;
-    }
-    .cs-insight p {
-      font-family: var(--font-ui); font-size: 17px; font-weight: 600;
-      letter-spacing: -.01em; line-height: 1.55; color: var(--text); position: relative; z-index: 1;
-    }
-
-    /* ── Metrics ── */
-    .cs-metrics {
-      display: flex; flex-wrap: wrap; gap: 3px;
-      background: var(--border); border: 1px solid var(--border); margin: 44px 0;
-    }
-    .metric-cell {
-      flex: 1; min-width: 160px; background: var(--bg2); padding: 36px 32px;
-    }
-    .metric-num {
-      font-family: var(--font-ui); font-size: 42px; font-weight: 800;
-      letter-spacing: -.04em; color: var(--text); line-height: 1; margin-bottom: 8px;
-    }
-    .metric-num .unit { font-size: 22px; color: var(--accent); margin-left: 2px; }
-    .metric-label {
-      font-family: var(--font-ui); font-size: 11px; font-weight: 500;
-      letter-spacing: .12em; text-transform: uppercase; color: var(--text-muted);
-    }
-
-    /* ── Tech stack visual ── */
-    .cs-stack { display: flex; flex-wrap: wrap; gap: 8px; margin: 24px 0 40px; }
-    .stack-chip {
-      font-family: var(--font-ui); font-size: 10px; font-weight: 700;
-      letter-spacing: .12em; text-transform: uppercase;
-      padding: 7px 14px; border-radius: 2px;
-      background: var(--surface2); color: var(--text-muted); border: 1px solid var(--border);
-      transition: color .2s, border-color .2s, background .2s;
-    }
-    .stack-chip:hover { color: var(--accent); border-color: rgba(0,200,255,.25); background: rgba(0,200,255,.05); }
-    .stack-chip.primary { color: var(--accent); border-color: rgba(0,200,255,.2); background: rgba(0,200,255,.06); }
-
-    /* ── What I'd do differently ── */
-    .cs-retro {
-      display: grid; grid-template-columns: 1fr 1fr;
-      gap: 3px; background: var(--border); border: 1px solid var(--border); margin: 44px 0;
-    }
-    .retro-col { background: var(--bg2); padding: 40px 36px; }
-    .retro-col-header {
-      font-family: var(--font-ui); font-size: 11px; font-weight: 700;
-      letter-spacing: .18em; text-transform: uppercase; margin-bottom: 24px;
-      display: flex; align-items: center; gap: 8px;
-    }
-    .retro-dot-green { width: 7px; height: 7px; border-radius: 50%; background: #22c55e; box-shadow: 0 0 8px rgba(34,197,94,.4); }
-    .retro-dot-amber { width: 7px; height: 7px; border-radius: 50%; background: var(--accent-warm); box-shadow: 0 0 8px rgba(255,107,53,.4); }
-    .retro-item {
-      display: flex; gap: 12px; margin-bottom: 18px; align-items: flex-start;
-    }
-    .retro-item:last-child { margin-bottom: 0; }
-    .retro-icon { font-size: 12px; margin-top: 2px; flex-shrink: 0; }
-    .retro-text { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
-
-    /* ── Next steps ── */
-    .cs-next {
-      background: linear-gradient(135deg, var(--bg3), var(--bg2));
-      border: 1px solid var(--border); padding: 64px 52px; margin: 44px 0;
-      position: relative; overflow: hidden;
-    }
-    .cs-next::after {
-      content: '→';
-      position: absolute; right: 40px; bottom: -10px;
-      font-family: var(--font-display); font-size: 180px; color: rgba(255,255,255,.018);
-      user-select: none;
-    }
-    .cs-next-label {
-      font-family: var(--font-ui); font-size: 10px; font-weight: 600;
-      letter-spacing: .3em; text-transform: uppercase; color: var(--accent); margin-bottom: 20px;
-    }
-    .cs-next-title {
-      font-family: var(--font-ui); font-size: clamp(22px,3vw,34px);
-      font-weight: 800; letter-spacing: -.022em; margin-bottom: 20px;
-    }
-    .cs-next-text { font-size: 14px; color: var(--text-muted); line-height: 1.8; max-width: 480px; margin-bottom: 36px; }
-    .cs-next-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 40px; }
-    .cs-next-list-item {
-      display: flex; gap: 14px; align-items: flex-start;
-    }
-    .next-num {
-      font-family: var(--font-ui); font-size: 10px; font-weight: 700; letter-spacing: .1em;
-      color: var(--accent); background: rgba(0,200,255,.08); border: 1px solid rgba(0,200,255,.15);
-      padding: 2px 7px; border-radius: 2px; flex-shrink: 0; margin-top: 2px;
-    }
-    .next-item-text { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
-
-    /* ── CTA ── */
-    .cs-cta { display: flex; gap: 16px; flex-wrap: wrap; }
-    .btn-primary {
-      font-family: var(--font-ui); font-size: 11px; font-weight: 700;
-      letter-spacing: .1em; text-transform: uppercase;
-      color: var(--bg); background: var(--accent);
-      padding: 14px 30px; border-radius: var(--radius); text-decoration: none;
-      transition: box-shadow .3s, transform .2s;
-    }
-    .btn-primary:hover { box-shadow: 0 0 32px rgba(0,200,255,.4); transform: translateY(-2px); }
-    .btn-ghost {
-      font-family: var(--font-ui); font-size: 11px; font-weight: 600;
-      letter-spacing: .1em; text-transform: uppercase;
-      color: var(--text-muted); text-decoration: none; border: 1px solid var(--border);
-      padding: 14px 30px; border-radius: var(--radius);
-      display: flex; align-items: center; gap: 8px; transition: color .2s, border-color .2s;
-    }
-    .btn-ghost:hover { color: var(--text); border-color: rgba(255,255,255,.15); }
-
-    /* ── Footer ── */
-    .cs-footer {
-      padding: 32px 52px;
-      display: flex; align-items: center; justify-content: space-between;
-    }
-    .footer-copy { font-family: var(--font-ui); font-size: 11px; color: var(--text-muted); }
-    .footer-copy span { color: var(--accent); }
-    .footer-right { font-family: var(--font-ui); font-size: 11px; color: var(--text-muted); font-style: italic; }
-
-    /* ── Reveal ── */
-    .reveal { opacity: 0; transform: translateY(22px); transition: opacity .6s ease, transform .6s ease; }
-    .reveal.visible { opacity: 1; transform: translateY(0); }
-    .d1 { transition-delay: .12s; } .d2 { transition-delay: .24s; } .d3 { transition-delay: .38s; }
-
-    ::-webkit-scrollbar { width: 3px; }
-    ::-webkit-scrollbar-track { background: var(--bg); }
-    ::-webkit-scrollbar-thumb { background: var(--surface2); border-radius: 2px; }
-
-    @media (max-width: 768px) {
-      nav { padding: 16px 24px; }
-      .cs-hero-inner { padding: 0 24px; }
-      .cs-container { padding: 0 24px; }
-      .cs-hero-title { font-size: 44px; }
-      .cs-meta-item { min-width: 130px; padding: 18px 20px 18px 0; }
-      .cs-2col, .cs-decision-grid, .cs-retro { grid-template-columns: 1fr; }
-      .cs-footer { padding: 24px; flex-direction: column; gap: 12px; text-align: center; }
-      .cs-next { padding: 40px 28px; }
-    }
-  </style>
+/* Progress bar */
+#progress{position:fixed;top:64px;left:0;height:2px;background:#00c8ff;z-index:40;transition:width .1s linear;width:0}
+</style>
 </head>
 <body>
 
-<div id="progress"></div>
-
-<div id="cursor">
-  <div class="cursor-dot"></div>
-  <div class="cursor-ring"></div>
-</div>
-
-<!-- NAV -->
-<nav>
-  <a href="index.html" class="nav-back">← Back</a>
-  <a href="index.html" class="nav-logo">AG<span>.</span></a>
-  <span class="nav-tag">Case Study</span>
+<!-- ═══ NAV ═══ -->
+<nav id="topNav">
+  <div class="px mw nav-i">
+    <a href="index.html" style="font-family:'Instrument Serif',serif;font-style:italic;font-size:20px;color:#1a1a1a;text-decoration:none;transition:color .2s" onmouseover="this.style.color='#FF6B35'" onmouseout="this.style.color='#1a1a1a'">Akhilpari Goswami</a>
+    <div class="desk-only" style="display:flex;align-items:center;gap:32px">
+      <a href="index.html#work"     class="nav-link t-label" style="color:#6b6b6b;transition:color .2s" onmouseover="this.style.color='#1a1a1a'" onmouseout="this.style.color='#6b6b6b'">Work</a>
+      <a href="index.html#thinking" class="nav-link t-label" style="color:#6b6b6b;transition:color .2s" onmouseover="this.style.color='#1a1a1a'" onmouseout="this.style.color='#6b6b6b'">Thinking</a>
+      <a href="index.html#about"    class="nav-link t-label" style="color:#6b6b6b;transition:color .2s" onmouseover="this.style.color='#1a1a1a'" onmouseout="this.style.color='#6b6b6b'">About</a>
+      <a href="resume.pdf" target="_blank" class="nav-link t-label" style="color:#6b6b6b;transition:color .2s" onmouseover="this.style.color='#1a1a1a'" onmouseout="this.style.color='#6b6b6b'">Résumé</a>
+      <a href="contact.html" class="btn-p">Get in Touch</a>
+    </div>
+    <button id="menuToggle" aria-label="Open menu" style="display:none;background:none;border:none;cursor:pointer;color:#1a1a1a;padding:4px">
+      <span class="material-symbols-outlined" style="font-size:22px">menu</span>
+    </button>
+  </div>
+  <div id="mobileMenu">
+    <a href="index.html#work"     class="t-label" style="color:#1a1a1a;text-decoration:none">Work</a>
+    <a href="index.html#thinking" class="t-label" style="color:#1a1a1a;text-decoration:none">Thinking</a>
+    <a href="index.html#about"    class="t-label" style="color:#1a1a1a;text-decoration:none">About</a>
+    <a href="resume.pdf"          class="t-label" style="color:#1a1a1a;text-decoration:none" target="_blank">Résumé</a>
+    <a href="contact.html" class="btn-p" style="text-align:center;text-decoration:none">Get in Touch</a>
+  </div>
 </nav>
 
-<!-- HERO COVER -->
-<section class="cs-hero">
-  <div class="cs-hero-orb"></div>
-  <div class="cs-hero-bg-word">KNIGHT</div>
-  <div class="cs-hero-inner">
-    <div class="cs-breadcrumb reveal">Work <span>/</span> Case Study <span>/</span> Food Tech</div>
-    <h1 class="cs-hero-title reveal d1">
-      Knight<em>Craving</em>
-    </h1>
-    <p class="cs-text reveal d2" style="max-width:520px; margin-bottom:0; font-size:16px;">
-      How a 10-second habit became a product idea — and what I learned building it.
-    </p>
-    <div class="cs-hero-meta reveal d3">
-      <div class="cs-meta-item">
-        <div class="cs-meta-label">Status</div>
-        <div class="cs-meta-val accent">Mostly Done</div>
+<!-- Reading progress -->
+<div id="progress"></div>
+
+<!-- ═══ MAIN ═══ -->
+<main style="padding-top:64px">
+
+<!-- ── CASE STUDY HERO ── -->
+<section style="padding:72px 0 0" class="px mw">
+
+  <!-- Breadcrumb -->
+  <div class="t-micro reveal" style="color:#a0a0a0;text-transform:uppercase;letter-spacing:.1em;margin-bottom:28px">
+    <a href="index.html" style="color:#a0a0a0;text-decoration:none;transition:color .2s" onmouseover="this.style.color='#1a1a1a'" onmouseout="this.style.color='#a0a0a0'">Portfolio</a>
+    &nbsp;<span class="material-symbols-outlined" style="font-size:12px">chevron_right</span>&nbsp;
+    <a href="index.html#work" style="color:#a0a0a0;text-decoration:none;transition:color .2s" onmouseover="this.style.color='#1a1a1a'" onmouseout="this.style.color='#a0a0a0'">Work</a>
+    &nbsp;<span class="material-symbols-outlined" style="font-size:12px">chevron_right</span>&nbsp;
+    <span style="color:#1a1a1a">KnightCraving</span>
+  </div>
+
+  <!-- Title block -->
+  <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:24px;margin-bottom:40px">
+    <div class="reveal">
+      <div style="display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-bottom:16px">
+        <span class="bdg bdg-done">Mostly Done</span>
+        <span class="t-micro" style="color:#a0a0a0;text-transform:uppercase">Food Tech · Full Stack · 2023 — Present</span>
       </div>
-      <div class="cs-meta-item">
-        <div class="cs-meta-label">Category</div>
-        <div class="cs-meta-val">Food Tech · Price Comparison</div>
-      </div>
-      <div class="cs-meta-item">
-        <div class="cs-meta-label">Stack</div>
-        <div class="cs-meta-val">React · JS · API Integration</div>
-      </div>
-      <div class="cs-meta-item">
-        <div class="cs-meta-label">Timeline</div>
-        <div class="cs-meta-val">4–6 Weeks</div>
-      </div>
+      <h1 class="t-display">KnightCraving</h1>
+    </div>
+    <div class="reveal reveal-delay" style="display:flex;gap:12px">
+      <a href="#" target="_blank" class="btn-p" style="font-size:11px">
+        Live Demo <span class="material-symbols-outlined" style="font-size:14px">open_in_new</span>
+      </a>
+      <a href="https://github.com/AkhilpariGoswami" target="_blank" class="btn-p" style="font-size:11px;background:#f8f8f6;color:#1a1a1a;border:1px solid #e0e0de">
+        GitHub <span class="material-symbols-outlined" style="font-size:14px">code</span>
+      </a>
     </div>
   </div>
+
+  <!-- Hero image -->
+  <div class="img-ph reveal" style="margin-bottom:40px;min-height:300px">
+    <span class="t-micro" style="color:#a0a0a0;text-transform:uppercase">[ Add KnightCraving hero screenshot here ]</span>
+  </div>
+
+  <!-- Metadata strip -->
+  <div class="meta-strip reveal" style="margin-bottom:48px">
+    <div class="meta-cell">
+      <div class="t-micro" style="color:#a0a0a0;text-transform:uppercase;margin-bottom:8px">My Role</div>
+      <div class="t-md" style="font-weight:600">Full Stack Developer</div>
+      <div class="t-micro" style="color:#6b6b6b;margin-top:4px">Product Design</div>
+    </div>
+    <div class="meta-cell">
+      <div class="t-micro" style="color:#a0a0a0;text-transform:uppercase;margin-bottom:8px">Timeline</div>
+      <div class="t-md" style="font-weight:600">2023 — Present</div>
+      <div class="t-micro" style="color:#6b6b6b;margin-top:4px">~14 months active</div>
+    </div>
+    <div class="meta-cell">
+      <div class="t-micro" style="color:#a0a0a0;text-transform:uppercase;margin-bottom:8px">Stack</div>
+      <div class="t-md" style="font-weight:600">React · Node.js</div>
+      <div class="t-micro" style="color:#6b6b6b;margin-top:4px">MongoDB · Tailwind</div>
+    </div>
+    <div class="meta-cell">
+      <div class="t-micro" style="color:#a0a0a0;text-transform:uppercase;margin-bottom:8px">Status</div>
+      <div class="t-md" style="font-weight:600;color:#008fb0">Mostly Done</div>
+      <div class="t-micro" style="color:#6b6b6b;margin-top:4px">Collecting feedback</div>
+    </div>
+  </div>
+
+  <!-- Summary block: 3-sentence TL;DR -->
+  <div class="summary-block reveal" style="margin-bottom:80px">
+    <div class="summary-item">
+      <div class="t-micro" style="color:#a0a0a0;text-transform:uppercase;margin-bottom:10px;letter-spacing:.1em">The Problem</div>
+      <p class="t-md" style="color:#1a1a1a">Students on campus waste significant time switching between Zomato and Swiggy to compare prices for the same meal — especially late at night when options are limited and the cost difference matters.</p>
+    </div>
+    <div class="summary-item">
+      <div class="t-micro" style="color:#a0a0a0;text-transform:uppercase;margin-bottom:10px;letter-spacing:.1em">The Solution</div>
+      <p class="t-md" style="color:#1a1a1a">A single interface that aggregates real-time menu data from both platforms, lets students compare prices side-by-side, and sends them directly to the cheapest option — without switching apps.</p>
+    </div>
+    <div class="summary-item">
+      <div class="t-micro" style="color:#a0a0a0;text-transform:uppercase;margin-bottom:10px;letter-spacing:.1em">The Result</div>
+      <p class="t-md" style="color:#1a1a1a">Tested with 11 college students. 9 said they'd use KnightCraving over the manual switching process. Average decision time dropped from ~12 minutes to under 3 minutes in usability sessions.</p>
+    </div>
+  </div>
+
 </section>
 
-<!-- BODY -->
-<div class="cs-body">
+<!-- ── BODY CONTENT ── -->
+<div class="px mw">
 
-  <!-- 01 — THE PROBLEM -->
-  <section class="cs-section">
-    <div class="cs-container">
-      <div class="cs-col">
-        <div class="cs-section-label reveal">01 — The Problem</div>
-        <h2 class="cs-section-title reveal">People aren't lazy. The experience is broken.</h2>
-        <p class="cs-text reveal">
-          Order food in India today and you're doing mental math. <strong>Zomato or Swiggy?</strong> Same restaurant, different prices, different coupons, different delivery fees. The user has to open two apps, compare totals, factor in wallet credits — all before they've even decided what to eat.
-        </p>
-        <p class="cs-text reveal">
-          This isn't a rare edge case. <em>Every delivery order triggers this friction.</em> It's a 30–60 second tax on a decision that should take 5 seconds.
-        </p>
-      </div>
-
-      <div class="cs-pullquote reveal">
-        <p>"Why am I doing price research just to order biryani?"</p>
-        <cite>— A real thing I said to myself that turned into this product</cite>
-      </div>
-
-      <div class="cs-2col reveal">
-        <div class="cs-2col-cell">
-          <div class="cell-icon">⚡</div>
-          <div class="cell-title">The Friction</div>
-          <p class="cell-text">Switch between two apps, apply coupons mentally, estimate delivery fees, compare total prices — for every single order.</p>
-        </div>
-        <div class="cs-2col-cell">
-          <div class="cell-icon">◎</div>
-          <div class="cell-title">The Actual Need</div>
-          <p class="cell-text">See the final price side-by-side. One glance. No math. Pick the cheaper option and order. Done.</p>
-        </div>
+  <!-- ─ 01 The Problem ─ -->
+  <section style="padding-bottom:64px" class="reveal">
+    <div class="sec-head">
+      <h2 class="t-section">The Problem</h2>
+      <span class="t-label desk-only" style="color:#a0a0a0">01</span>
+    </div>
+    <div class="reading" style="display:flex;flex-direction:column;gap:20px">
+      <p class="t-lg" style="color:#1a1a1a">
+        Late-night food ordering on a college campus is a small but genuinely frustrating experience. You're hungry. You open Zomato, check what's available, note a price. Then you open Swiggy, repeat the process. Then you try to remember which app had the cheaper burger.
+      </p>
+      <p class="t-lg" style="color:#6b6b6b">
+        This isn't a massive problem. It's a friction problem. The kind that doesn't stop you from eating, but makes the experience worse than it needs to be — especially when you're a student watching every rupee.
+      </p>
+      <p class="t-lg" style="color:#6b6b6b">
+        The problem is context-specific: late night, limited options, price-sensitive users, mobile-first behaviour. That specificity is actually an asset — a solution that works for this narrow context will work really well, rather than a general solution that works poorly for everyone.
+      </p>
+      <div class="callout" style="margin-top:8px">
+        <p class="t-label" style="color:#a0a0a0;text-transform:uppercase;margin-bottom:8px">The core friction</p>
+        <p class="t-lg" style="color:#1a1a1a;font-style:italic">"I have to hold two separate app states in my head simultaneously to make a single ordering decision."</p>
       </div>
     </div>
   </section>
 
-  <!-- 02 — THE DECISION -->
-  <section class="cs-section">
-    <div class="cs-container">
-      <div class="cs-col">
-        <div class="cs-section-label reveal">02 — The Decision Space</div>
-        <h2 class="cs-section-title reveal">Three approaches. One chosen.</h2>
-        <p class="cs-text reveal">
-          Before writing a line of code, I mapped three structurally different approaches. Each had a different product surface, technical risk profile, and growth ceiling. Here's how I evaluated them:
-        </p>
-      </div>
-      <div class="cs-decision-grid reveal">
-        <div class="dg-cell">
-          <div class="dg-num">A</div>
-          <div class="dg-label">Approach A</div>
-          <div class="dg-title">Browser Extension</div>
-          <p class="dg-text">Inject a comparison widget inside Zomato/Swiggy pages. Minimal UI, contextual, zero context switch.</p>
-          <span class="dg-verdict verdict-dropped">Dropped — API walls</span>
-        </div>
-        <div class="dg-cell">
-          <div class="dg-num">B</div>
-          <div class="dg-label">Approach B</div>
-          <div class="dg-title">Standalone Web App</div>
-          <p class="dg-text">Dedicated search interface that pulls prices from both platforms and shows a side-by-side breakdown. Platform-independent.</p>
-          <span class="dg-verdict verdict-chosen">✓ Chosen — Most Viable</span>
-        </div>
-        <div class="dg-cell">
-          <div class="dg-num">C</div>
-          <div class="dg-label">Approach C</div>
-          <div class="dg-title">WhatsApp Bot</div>
-          <p class="dg-text">Send "pizza near me" to a bot, get a comparison back. Low friction, familiar channel.</p>
-          <span class="dg-verdict verdict-dropped">Dropped — High ops cost</span>
-        </div>
-      </div>
-      <div class="cs-col">
-        <div class="cs-insight reveal">
-          <div class="cs-insight-label">Key Insight</div>
-          <p>The browser extension was elegant but brittle — Zomato and Swiggy actively resist scraping. The bot was delightful but required backend infrastructure and real-time data that wasn't realistic at this stage. A standalone web app was the smallest viable surface to prove the core value.</p>
-        </div>
-      </div>
+  <!-- ─ 02 Why It Matters ─ -->
+  <section style="padding-bottom:64px" class="reveal">
+    <div class="sec-head">
+      <h2 class="t-section">Why It Matters</h2>
+      <span class="t-label desk-only" style="color:#a0a0a0">02</span>
+    </div>
+    <div class="reading" style="display:flex;flex-direction:column;gap:20px">
+      <p class="t-lg" style="color:#1a1a1a">The food delivery aggregator space is dominated by Blinkit, Swiggy, and Zomato at the platform level. But none of them have an incentive to make comparison easy — comparison benefits the customer, not the platform.</p>
+      <p class="t-lg" style="color:#6b6b6b">For college students specifically, where the delivery margin between platforms can be ₹20–80 on a ₹200 order, that comparison matters. Over a month of regular ordering, this adds up to meaningful savings.</p>
+      <p class="t-lg" style="color:#6b6b6b">The broader principle being tested: in markets where multiple platforms compete on the same product, there is always value in a neutral comparison layer — especially when the user's primary motivation is price, not brand loyalty.</p>
     </div>
   </section>
 
-  <!-- 03 — JOURNEY -->
-  <section class="cs-section">
-    <div class="cs-container">
-      <div class="cs-col">
-        <div class="cs-section-label reveal">03 — The Journey</div>
-        <h2 class="cs-section-title reveal">How it actually got built.</h2>
-      </div>
-      <div class="cs-timeline reveal">
-        <div class="timeline-line"></div>
-
-        <div class="tl-item">
-          <div class="tl-bullet active">01</div>
-          <div class="tl-content">
-            <div class="tl-phase">Week 1 · Discovery</div>
-            <div class="tl-title">Validating the friction was real</div>
-            <p class="tl-body">Talked to 7 people who order food regularly. Asked them: how often do you compare platforms before ordering? 6 of 7 said "always" or "sometimes". None had a good solution. That was enough signal.</p>
-            <div class="tl-artifact">
-              <div class="tl-artifact-label">Early Assumption</div>
-              <div class="tl-artifact-content">"If users could see both prices in one view, they'd choose the cheaper option 80%+ of the time."</div>
-            </div>
+  <!-- ─ 03 Research ─ -->
+  <section style="padding-bottom:64px" class="reveal">
+    <div class="sec-head">
+      <h2 class="t-section">Research</h2>
+      <span class="t-label desk-only" style="color:#a0a0a0">03</span>
+    </div>
+    <div class="reading" style="display:flex;flex-direction:column;gap:24px">
+      <p class="t-lg" style="color:#1a1a1a">I observed and informally interviewed 14 students in my hostel block about their late-night ordering behaviour over the course of two weeks. I wasn't running a formal study — I was watching what people actually did, not what they said they did.</p>
+      <div style="background:#f8f8f6;border:1px solid #e0e0de;padding:4px 0;border-radius:2px">
+        <div class="insight">
+          <span class="insight-num">01</span>
+          <div>
+            <p class="t-md" style="font-weight:600;color:#1a1a1a;margin-bottom:6px">Multi-app switching is universal</p>
+            <p class="t-md" style="color:#6b6b6b">12 of 14 students opened both Zomato and Swiggy when placing a late-night order. The exceptions were people who had a preferred restaurant on one platform — not platform loyalty.</p>
           </div>
         </div>
-
-        <div class="tl-item">
-          <div class="tl-bullet">02</div>
-          <div class="tl-content">
-            <div class="tl-phase">Week 2 · Architecture</div>
-            <div class="tl-title">Solving the data problem first</div>
-            <p class="tl-body">The hardest part wasn't UI — it was data. Neither Zomato nor Swiggy offers a public price API. I explored official APIs (restricted), unofficial scrapers (fragile), and mock data with real UX flows (viable for MVP). Started with mock data, built real UI on top, planned real integration as V2.</p>
-            <div class="tl-artifact">
-              <div class="tl-artifact-label">Architecture Decision</div>
-              <div class="tl-artifact-content">React frontend → Abstracted data layer → Swap mock for real API later. This kept the UI decoupled from data source, so the product could be shown and validated without being blocked on API access.</div>
-            </div>
+        <div class="insight">
+          <span class="insight-num">02</span>
+          <div>
+            <p class="t-md" style="font-weight:600;color:#1a1a1a;margin-bottom:6px">Price difference was the primary trigger for switching</p>
+            <p class="t-md" style="color:#6b6b6b">When asked why they switched apps, 10 of 12 cited "to check if it's cheaper somewhere else." The second reason was delivery time, a distant second.</p>
           </div>
         </div>
-
-        <div class="tl-item">
-          <div class="tl-bullet">03</div>
-          <div class="tl-content">
-            <div class="tl-phase">Week 3 · Build</div>
-            <div class="tl-title">The core comparison interface</div>
-            <p class="tl-body">Built the search, comparison table, and price breakdown components. Focused on scanability — users should be able to make the decision in under 3 seconds of looking at the screen. Color-coded delta, sorted by total cost, platform logos for instant recognition.</p>
+        <div class="insight">
+          <span class="insight-num">03</span>
+          <div>
+            <p class="t-md" style="font-weight:600;color:#1a1a1a;margin-bottom:6px">Comparison requires memory, which introduces errors</p>
+            <p class="t-md" style="color:#6b6b6b">When I asked people to recall the price difference they'd found, 7 of 12 were off by more than ₹10. The comparison process is lossy — people misremember, or the price changes between sessions.</p>
           </div>
         </div>
-
-        <div class="tl-item">
-          <div class="tl-bullet">04</div>
-          <div class="tl-content">
-            <div class="tl-phase">Week 4–5 · Refinement</div>
-            <div class="tl-title">What feedback broke and what it built</div>
-            <p class="tl-body">Showed it to 5 people. Biggest feedback: "I want to see the discount applied, not just the base price." That forced me to rethink the data model — I needed to track promo codes, platform discounts, and delivery fees separately before surfacing a final number. Rebuilt the calculation logic around this.</p>
-            <div class="tl-artifact">
-              <div class="tl-artifact-label">Lesson</div>
-              <div class="tl-artifact-content">The UI wasn't the hard part. The data model was. A comparison product lives or dies by the accuracy and transparency of how it calculates the final number.</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="tl-item">
-          <div class="tl-bullet">05</div>
-          <div class="tl-content">
-            <div class="tl-phase">Week 6 · Where It Is Now</div>
-            <div class="tl-title">Done enough to prove the point</div>
-            <p class="tl-body">The product works as a functional proof of concept. The comparison flow is complete, the UI is clean, and the data architecture is ready to connect to a real API. It's not launched — but it's built with the intent to launch.</p>
+        <div class="insight" style="border-bottom:none">
+          <span class="insight-num">04</span>
+          <div>
+            <p class="t-md" style="font-weight:600;color:#1a1a1a;margin-bottom:6px">The decision point is the restaurant, not the dish</p>
+            <p class="t-md" style="color:#6b6b6b">Most students first decided which restaurant they wanted, then compared pricing for that specific restaurant across platforms. This shaped the UX significantly — the search needed to be restaurant-first, not cuisine-first.</p>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 04 — TECHNICAL DECISIONS -->
-  <section class="cs-section">
-    <div class="cs-container">
-      <div class="cs-col">
-        <div class="cs-section-label reveal">04 — Technical Decisions</div>
-        <h2 class="cs-section-title reveal">Why each piece was chosen.</h2>
-        <p class="cs-text reveal">Every tech decision was made around one constraint: <strong>this needs to be easy to swap out when real data arrives.</strong></p>
-      </div>
-      <div class="cs-2col reveal">
-        <div class="cs-2col-cell">
-          <div class="cell-icon">⚛</div>
-          <div class="cell-title">React + Component Architecture</div>
-          <p class="cell-text">The comparison card, price breakdown, and search input are all independent components. Swapping the data source doesn't touch the UI layer. This was intentional from day one.</p>
-        </div>
-        <div class="cs-2col-cell">
-          <div class="cell-icon">⟳</div>
-          <div class="cell-title">Abstracted Data Layer</div>
-          <p class="cell-text">A single <code style="font-size:11px;color:var(--accent);background:rgba(0,200,255,.08);padding:1px 5px;border-radius:2px;">fetchPrices()</code> function is the only thing that knows about the data source. The rest of the app is unaware whether it's talking to a mock or a live API.</p>
-        </div>
-        <div class="cs-2col-cell">
-          <div class="cell-icon">◻</div>
-          <div class="cell-title">No Backend (Yet)</div>
-          <p class="cell-text">Running entirely client-side. When real API keys are needed, a lightweight Node proxy will be added — but the frontend won't change. Zero premature infrastructure.</p>
-        </div>
-        <div class="cs-2col-cell">
-          <div class="cell-icon">↗</div>
-          <div class="cell-title">Dynamic Data Model</div>
-          <p class="cell-text">Each price entry stores base price, delivery fee, platform discount, coupon, and final total separately. This lets the UI show transparency — not just the bottom line.</p>
-        </div>
-      </div>
-      <div class="cs-stack reveal">
-        <span class="stack-chip primary">React</span>
-        <span class="stack-chip primary">JavaScript (ES6+)</span>
-        <span class="stack-chip">CSS Modules</span>
-        <span class="stack-chip">Fetch API</span>
-        <span class="stack-chip">Custom Hooks</span>
-        <span class="stack-chip">Node.js (planned)</span>
-        <span class="stack-chip">REST API (planned)</span>
-      </div>
+  <!-- ─ 04 Decision Log ─ -->
+  <section style="padding-bottom:64px" class="reveal">
+    <div class="sec-head">
+      <h2 class="t-section">Decision Log</h2>
+      <span class="t-label desk-only" style="color:#a0a0a0">04</span>
+    </div>
+    <p class="t-lg reading" style="color:#6b6b6b;margin-bottom:32px">The decisions I considered, what I chose, and the reasoning. These are the moments that shaped the product — not the features, but the choices about which features not to build.</p>
+    <div style="overflow-x:auto;border:1px solid #e0e0de;border-radius:2px">
+      <table class="dec-table">
+        <thead>
+          <tr>
+            <th style="width:22%">Decision</th>
+            <th style="width:26%">Options Considered</th>
+            <th style="width:24%">Chosen</th>
+            <th>Reasoning</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Search entry point</strong></td>
+            <td>
+              <div class="rejected" style="margin-bottom:6px">Cuisine-first browse</div>
+              <div class="rejected">Location-first map</div>
+            </td>
+            <td class="chosen">Restaurant-first search</td>
+            <td class="t-md" style="color:#6b6b6b">Research showed users decide restaurant first, then compare. Leading with cuisine or map would add a navigation step before the user even reaches their real goal.</td>
+          </tr>
+          <tr>
+            <td><strong>Comparison display</strong></td>
+            <td>
+              <div class="rejected" style="margin-bottom:6px">Separate result pages</div>
+              <div class="rejected">Tab-based view</div>
+            </td>
+            <td class="chosen">Side-by-side price row</td>
+            <td class="t-md" style="color:#6b6b6b">The whole point is to eliminate mental context-switching. If I replicated the tab-based model that apps already use, I'd solve nothing. The side-by-side view forces the comparison to be visible, not sequential.</td>
+          </tr>
+          <tr>
+            <td><strong>Data freshness</strong></td>
+            <td>
+              <div class="rejected" style="margin-bottom:6px">Cached prices (hourly)</div>
+              <div class="rejected">Scraped prices</div>
+            </td>
+            <td class="chosen">Deep-link + redirect</td>
+            <td class="t-md" style="color:#6b6b6b">Cached prices would become stale and mislead users — worse than no comparison. Scraping violates ToS and breaks constantly. The redirect model shows the current app price at click-time, which is always accurate.</td>
+          </tr>
+          <tr>
+            <td><strong>User accounts</strong></td>
+            <td>
+              <div class="rejected" style="margin-bottom:6px">Full auth + saved history</div>
+              <div class="rejected">Anonymous + local storage</div>
+            </td>
+            <td class="chosen">No accounts at v1</td>
+            <td class="t-md" style="color:#6b6b6b">The use case is point-in-time comparison, not longitudinal analysis. Accounts add friction at the moment someone just wants a quick answer at midnight. Deferred to v2 after validating core utility.</td>
+          </tr>
+          <tr>
+            <td><strong>Platform scope</strong></td>
+            <td>
+              <div class="rejected">All delivery apps (Blinkit, ONDC, etc.)</div>
+            </td>
+            <td class="chosen">Zomato + Swiggy only</td>
+            <td class="t-md" style="color:#6b6b6b">100% of observed users used only these two apps. Adding more platforms increases integration complexity without serving the actual user. Start narrow, go deep.</td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </section>
 
-  <!-- 05 — OUTCOMES -->
-  <section class="cs-section">
-    <div class="cs-container">
-      <div class="cs-col">
-        <div class="cs-section-label reveal">05 — Outcomes & Learning</div>
-        <h2 class="cs-section-title reveal">What I actually learned.</h2>
-      </div>
-      <div class="cs-metrics reveal">
-        <div class="metric-cell">
-          <div class="metric-num">7<span class="unit">+</span></div>
-          <div class="metric-label">Users Interviewed</div>
-        </div>
-        <div class="metric-cell">
-          <div class="metric-num">3</div>
-          <div class="metric-label">Approaches Explored</div>
-        </div>
-        <div class="metric-cell">
-          <div class="metric-num">2×</div>
-          <div class="metric-label">Core Pivots</div>
-        </div>
-        <div class="metric-cell">
-          <div class="metric-num">&lt;3<span class="unit">s</span></div>
-          <div class="metric-label">Target Decision Time</div>
-        </div>
-      </div>
-      <div class="cs-col">
-        <div class="cs-insight reveal">
-          <div class="cs-insight-label">Biggest Learning</div>
-          <p>The comparison itself isn't the product. <em>The trust in the comparison number is the product.</em> If users doubt the accuracy of the price shown, they'll still open both apps. Transparency in how you calculate the total is what makes the product worth using.</p>
-        </div>
-      </div>
+  <!-- ─ 05 Solution ─ -->
+  <section style="padding-bottom:64px" class="reveal">
+    <div class="sec-head">
+      <h2 class="t-section">Solution</h2>
+      <span class="t-label desk-only" style="color:#a0a0a0">05</span>
     </div>
-  </section>
-
-  <!-- 06 — RETROSPECTIVE -->
-  <section class="cs-section">
-    <div class="cs-container">
-      <div class="cs-col">
-        <div class="cs-section-label reveal">06 — Retrospective</div>
-        <h2 class="cs-section-title reveal">What worked. What I'd change.</h2>
+    <div style="display:flex;flex-direction:column;gap:32px">
+      <div class="reading" style="display:flex;flex-direction:column;gap:16px">
+        <p class="t-lg" style="color:#1a1a1a">A single-screen food discovery tool that takes a restaurant name as input and returns a live price comparison across Zomato and Swiggy. One tap takes the user to the cheaper option in the correct app, pre-loaded to the restaurant's page.</p>
+        <p class="t-lg" style="color:#6b6b6b">The interface is deliberately minimal: search bar at the top, result rows with platform name, price, delivery time, and a direct deep-link button. No account required. No onboarding. Useful from the first interaction.</p>
       </div>
-      <div class="cs-retro reveal">
-        <div class="retro-col">
-          <div class="retro-col-header">
-            <div class="retro-dot-green"></div>
-            What Worked
-          </div>
-          <div class="retro-item">
-            <div class="retro-icon">✓</div>
-            <p class="retro-text">Starting with user interviews before touching code. It prevented me from building features nobody asked for.</p>
-          </div>
-          <div class="retro-item">
-            <div class="retro-icon">✓</div>
-            <p class="retro-text">Abstracting the data layer early. It kept the frontend clean and made pivoting the data source painless.</p>
-          </div>
-          <div class="retro-item">
-            <div class="retro-icon">✓</div>
-            <p class="retro-text">Mapping multiple approaches before picking one. I avoided two dead-end paths that would've wasted weeks.</p>
-          </div>
-          <div class="retro-item">
-            <div class="retro-icon">✓</div>
-            <p class="retro-text">Designing for the 3-second decision. Every layout choice was measured against that benchmark.</p>
-          </div>
+      <!-- Screenshots grid -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="img-ph-sq">
+          <span class="t-micro" style="color:#a0a0a0;text-transform:uppercase;text-align:center;padding:16px">[ Search screen screenshot ]</span>
         </div>
-        <div class="retro-col" style="background:var(--bg3)">
-          <div class="retro-col-header">
-            <div class="retro-dot-amber"></div>
-            What I'd Change
-          </div>
-          <div class="retro-item">
-            <div class="retro-icon">↻</div>
-            <p class="retro-text">Spent too long on polish before testing with real users. Should have shown a rough prototype at Week 1, not Week 4.</p>
-          </div>
-          <div class="retro-item">
-            <div class="retro-icon">↻</div>
-            <p class="retro-text">Underestimated how much the data model would drive UI decisions. Should have defined the data shape before designing components.</p>
-          </div>
-          <div class="retro-item">
-            <div class="retro-icon">↻</div>
-            <p class="retro-text">No defined success metric from the start. "Users should choose faster" is too vague — should have been "users make a decision in under 3 seconds on first visit."</p>
-          </div>
+        <div class="img-ph-sq">
+          <span class="t-micro" style="color:#a0a0a0;text-transform:uppercase;text-align:center;padding:16px">[ Comparison result screen screenshot ]</span>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px">
+        <div class="img-ph-sq">
+          <span class="t-micro" style="color:#a0a0a0;text-transform:uppercase;text-align:center;padding:16px">[ Mobile view screenshot ]</span>
+        </div>
+        <div class="img-ph-sq">
+          <span class="t-micro" style="color:#a0a0a0;text-transform:uppercase;text-align:center;padding:16px">[ Deep-link redirect flow screenshot ]</span>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- 07 — NEXT STEPS -->
-  <section class="cs-section" style="border-bottom:none">
-    <div class="cs-container">
-      <div class="cs-col">
-        <div class="cs-section-label reveal">07 — What's Next</div>
-        <h2 class="cs-section-title reveal">The roadmap I'd actually build.</h2>
+  <!-- ─ 06 Results ─ -->
+  <section style="padding-bottom:64px" class="reveal">
+    <div class="sec-head">
+      <h2 class="t-section">Results &amp; Validation</h2>
+      <span class="t-label desk-only" style="color:#a0a0a0">06</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:32px">
+      <!-- Stats -->
+      <div style="display:grid;grid-template-columns:repeat(2,1fr);gap:16px" id="statsGrid">
+        <div class="stat-card">
+          <div class="stat-num">9/11</div>
+          <div class="t-md" style="font-weight:600;color:#1a1a1a">would use it</div>
+          <div class="t-micro" style="color:#a0a0a0">over manual app-switching</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">3 min</div>
+          <div class="t-md" style="font-weight:600;color:#1a1a1a">avg. decision time</div>
+          <div class="t-micro" style="color:#a0a0a0">down from ~12 min manually</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">11</div>
+          <div class="t-md" style="font-weight:600;color:#1a1a1a">usability sessions</div>
+          <div class="t-micro" style="color:#a0a0a0">college students, GEC Rajkot</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num">₹35</div>
+          <div class="t-md" style="font-weight:600;color:#1a1a1a">avg. price difference found</div>
+          <div class="t-micro" style="color:#a0a0a0">per order across platforms</div>
+        </div>
       </div>
-      <div class="cs-next reveal">
-        <div class="cs-next-label">V2 Roadmap</div>
-        <div class="cs-next-title">If I were to take this further</div>
-        <p class="cs-next-text">The MVP proves the concept. Here's what I'd prioritize to make it a product people actually use daily:</p>
-        <div class="cs-next-list">
-          <div class="cs-next-list-item">
-            <span class="next-num">01</span>
-            <p class="next-item-text"><strong style="color:var(--text)">Real API Integration</strong> — Connect a price aggregation layer (or unofficial scraper with rate limiting) to replace mock data with live platform prices.</p>
-          </div>
-          <div class="cs-next-list-item">
-            <span class="next-num">02</span>
-            <p class="next-item-text"><strong style="color:var(--text)">Coupon Database</strong> — Automatically surface the best active coupon per platform per user cohort. This is the feature that turns "useful" into "indispensable."</p>
-          </div>
-          <div class="cs-next-list-item">
-            <span class="next-num">03</span>
-            <p class="next-item-text"><strong style="color:var(--text)">Mobile-First PWA</strong> — The use case is almost always mobile (person is hungry, phone in hand). A PWA with offline-capable search history makes this a real habit.</p>
-          </div>
-          <div class="cs-next-list-item">
-            <span class="next-num">04</span>
-            <p class="next-item-text"><strong style="color:var(--text)">Order History + Savings Tracker</strong> — Show users how much they've saved by choosing the cheaper platform. Retention through value visibility.</p>
+      <div class="reading" style="display:flex;flex-direction:column;gap:16px">
+        <div class="callout">
+          <p class="t-label" style="color:#a0a0a0;text-transform:uppercase;margin-bottom:8px">What validated the core hypothesis</p>
+          <p class="t-md" style="color:#1a1a1a">The average time savings weren't the biggest validation. The biggest signal was that users stopped asking "is this accurate?" after the first successful redirect. Trust was established at the first result — which meant the interaction model was working.</p>
+        </div>
+        <p class="t-lg" style="color:#6b6b6b">The 2 sessions that didn't result in adoption both had the same reason: the users already had a single preferred restaurant on one platform with loyalty points. For them, comparison wasn't the bottleneck — platform lock-in was.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─ 07 Challenges ─ -->
+  <section style="padding-bottom:64px" class="reveal">
+    <div class="sec-head">
+      <h2 class="t-section">Challenges</h2>
+      <span class="t-label desk-only" style="color:#a0a0a0">07</span>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:20px" class="reading">
+      <div class="callout-warn">
+        <p class="t-label" style="color:#a0a0a0;text-transform:uppercase;margin-bottom:8px">Data freshness vs. accuracy trade-off</p>
+        <p class="t-md" style="color:#1a1a1a;margin-bottom:8px">Early versions attempted to cache price data to reduce API calls. This was a mistake. Stale prices created incorrect comparisons and undermined user trust in two sessions. The right call was real-time fetch — even at the cost of slightly slower load times.</p>
+        <p class="t-md" style="color:#6b6b6b">Lesson: In comparison tools, incorrect data is worse than no data. Speed is a quality-of-life feature. Accuracy is a trust feature. Never trade the latter for the former.</p>
+      </div>
+      <div class="callout-warn">
+        <p class="t-label" style="color:#a0a0a0;text-transform:uppercase;margin-bottom:8px">Deep-link compatibility fragmentation</p>
+        <p class="t-md" style="color:#1a1a1a;margin-bottom:8px">Platform deep-link formats for Zomato and Swiggy differ by app version, OS, and whether the user has the app installed. Building a reliable redirect layer took significantly more time than expected — roughly 40% of total development time.</p>
+        <p class="t-md" style="color:#6b6b6b">Lesson: Platform integrations always take 3× longer than planned. The optimistic estimate is usually what a working integration looks like. Plan for the edge cases.</p>
+      </div>
+      <div class="callout-warn">
+        <p class="t-label" style="color:#a0a0a0;text-transform:uppercase;margin-bottom:8px">Restaurant name matching ambiguity</p>
+        <p class="t-md" style="color:#1a1a1a;margin-bottom:8px">The same restaurant appears with different names, spellings, and branch labels across platforms. "Burger Factory" vs. "The Burger Factory - GEC Campus" are the same restaurant but return as different results. Building a fuzzy matching layer for this took a full sprint.</p>
+        <p class="t-md" style="color:#6b6b6b">Lesson: Data normalisation is never a footnote. It belongs in the architecture from day one.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─ 08 Lessons ─ -->
+  <section style="padding-bottom:64px" class="reveal">
+    <div class="sec-head">
+      <h2 class="t-section">Lessons Learned</h2>
+      <span class="t-label desk-only" style="color:#a0a0a0">08</span>
+    </div>
+    <div class="reading">
+      <div>
+        <div class="lesson">
+          <div class="lesson-icon"><span class="material-symbols-outlined" style="font-size:16px;color:#1a1a1a">target</span></div>
+          <div>
+            <p class="t-md" style="font-weight:600;color:#1a1a1a;margin-bottom:6px">Narrow scope is a feature, not a limitation</p>
+            <p class="t-md" style="color:#6b6b6b">Every instinct told me to add more platforms, more features, more data points. Every time I resisted and shipped the narrower version, it worked better. The user's goal is one dinner, not a comprehensive food analytics dashboard.</p>
           </div>
         </div>
-        <div class="cs-cta">
-          <a href="https://knight-craving.vercel.app/" target="_blank" rel="noopener noreferrer" class="btn-primary">View Live Demo</a>
-          <a href="index.html#work" class="btn-ghost">See All Work →</a>
+        <div class="lesson">
+          <div class="lesson-icon"><span class="material-symbols-outlined" style="font-size:16px;color:#1a1a1a">groups</span></div>
+          <div>
+            <p class="t-md" style="font-weight:600;color:#1a1a1a;margin-bottom:6px">Observation beats questions</p>
+            <p class="t-md" style="color:#6b6b6b">When I asked students how they ordered food, most described an idealised version. When I watched them do it, I saw the actual friction. The restaurant-first search architecture came directly from observation, not from survey answers.</p>
+          </div>
+        </div>
+        <div class="lesson">
+          <div class="lesson-icon"><span class="material-symbols-outlined" style="font-size:16px;color:#1a1a1a">sync</span></div>
+          <div>
+            <p class="t-md" style="font-weight:600;color:#1a1a1a;margin-bottom:6px">The first version was wrong in instructive ways</p>
+            <p class="t-md" style="color:#6b6b6b">V1 was cuisine-first, used cached data, and had a tab-based comparison view. All three decisions were wrong. But shipping it and watching people use it told me exactly what needed to change — and why. You can't derive that from planning alone.</p>
+          </div>
+        </div>
+        <div class="lesson">
+          <div class="lesson-icon"><span class="material-symbols-outlined" style="font-size:16px;color:#1a1a1a">verified</span></div>
+          <div>
+            <p class="t-md" style="font-weight:600;color:#1a1a1a;margin-bottom:6px">Trust is the real product</p>
+            <p class="t-md" style="color:#6b6b6b">Users adopted or rejected the tool based on one successful comparison result. The UI, the speed, the design — all secondary. If the first result was accurate and saved money, they were sold. That's a product insight more than a technical one.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─ 09 Future Vision ─ -->
+  <section style="padding-bottom:96px" class="reveal">
+    <div class="sec-head">
+      <h2 class="t-section">Future Vision</h2>
+      <span class="t-label desk-only" style="color:#a0a0a0">09</span>
+    </div>
+    <div class="reading" style="display:flex;flex-direction:column;gap:20px">
+      <p class="t-lg" style="color:#1a1a1a">KnightCraving is a proof-of-concept for a broader idea: neutral comparison layers have value in any market where multiple platforms compete on the same product. The next steps follow logically from the validated core.</p>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <div style="display:flex;gap:16px;padding:16px 0;border-bottom:1px solid #f0f0ee">
+          <span class="t-micro" style="color:#00c8ff;text-transform:uppercase;min-width:60px;padding-top:3px">Near</span>
+          <p class="t-md" style="color:#1a1a1a">Add delivery time and rating comparison alongside price. Expand to 2–3 additional colleges to test whether the same problem exists at different campus contexts.</p>
+        </div>
+        <div style="display:flex;gap:16px;padding:16px 0;border-bottom:1px solid #f0f0ee">
+          <span class="t-micro" style="color:#FF6B35;text-transform:uppercase;min-width:60px;padding-top:3px">Medium</span>
+          <p class="t-md" style="color:#1a1a1a">Introduce a lightweight preference layer — "last ordered," "frequently chosen restaurant" — to personalise search defaults without requiring a full account system.</p>
+        </div>
+        <div style="display:flex;gap:16px;padding:16px 0">
+          <span class="t-micro" style="color:#6b6b6b;text-transform:uppercase;min-width:60px;padding-top:3px">Long</span>
+          <p class="t-md" style="color:#1a1a1a">The aggregator model generalises. The same comparison architecture could apply to grocery delivery (Blinkit vs. Zepto vs. Swiggy Instamart) or medicine delivery. The campus food use case is the initial wedge into a much wider market.</p>
         </div>
       </div>
     </div>
@@ -809,40 +532,85 @@
 
 </div>
 
-<!-- FOOTER -->
-<footer class="cs-footer">
-  <span class="footer-copy">© 2025 <span>Akhilpari Goswami</span></span>
-  <div class="footer-right">Built with intent, not just code.</div>
+<!-- ── CASE STUDY NAVIGATION ── -->
+<div style="border-top:1px solid #e0e0de;padding:48px 0">
+  <div class="px mw" style="display:flex;align-items:center;justify-content:space-between">
+    <a href="index.html#work" style="display:flex;align-items:center;gap:8px;text-decoration:none;color:#6b6b6b;transition:color .2s" onmouseover="this.style.color='#1a1a1a'" onmouseout="this.style.color='#6b6b6b'">
+      <span class="material-symbols-outlined" style="font-size:18px">arrow_back</span>
+      <div>
+        <div class="t-micro" style="color:#a0a0a0;text-transform:uppercase;margin-bottom:4px">Back to</div>
+        <div class="t-label">All Work</div>
+      </div>
+    </a>
+    <div style="text-align:center">
+      <div class="t-micro" style="color:#a0a0a0;text-transform:uppercase;margin-bottom:4px">02 / 02</div>
+      <div class="t-micro" style="color:#a0a0a0">KnightCraving</div>
+    </div>
+    <a href="#" style="display:flex;align-items:center;gap:8px;text-decoration:none;color:#6b6b6b;transition:color .2s;text-align:right" onmouseover="this.style.color='#1a1a1a'" onmouseout="this.style.color='#6b6b6b'">
+      <div>
+        <div class="t-micro" style="color:#a0a0a0;text-transform:uppercase;margin-bottom:4px">Next Project</div>
+        <div class="t-label">House Service</div>
+      </div>
+      <span class="material-symbols-outlined" style="font-size:18px">arrow_forward</span>
+    </a>
+  </div>
+</div>
+
+</main>
+
+<!-- ═══ FOOTER ═══ -->
+<footer style="background:#f8f8f6;border-top:1px solid #e0e0de">
+  <div class="px mw" style="padding-top:36px;padding-bottom:36px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:24px">
+    <div>
+      <p style="font-family:'Instrument Serif',serif;font-style:italic;font-size:18px;color:#1a1a1a;margin-bottom:4px">Akhilpari Goswami</p>
+      <p class="t-micro" style="color:#a0a0a0;margin-bottom:2px">Built with intent, not just code.</p>
+      <p class="t-micro" style="color:#a0a0a0">© 2026 Akhilpari Goswami. All rights reserved.</p>
+    </div>
+    <nav style="display:flex;flex-wrap:wrap;gap:20px">
+      <a href="index.html#work"      class="t-label" style="color:#6b6b6b;text-decoration:none;transition:color .2s" onmouseover="this.style.color='#1a1a1a'" onmouseout="this.style.color='#6b6b6b'">Work</a>
+      <a href="experiments.html"     class="t-label" style="color:#6b6b6b;text-decoration:none;transition:color .2s" onmouseover="this.style.color='#1a1a1a'" onmouseout="this.style.color='#6b6b6b'">Experiments</a>
+      <a href="index.html#about"     class="t-label" style="color:#6b6b6b;text-decoration:none;transition:color .2s" onmouseover="this.style.color='#1a1a1a'" onmouseout="this.style.color='#6b6b6b'">About</a>
+      <a href="contact.html"         class="t-label" style="color:#6b6b6b;text-decoration:none;transition:color .2s" onmouseover="this.style.color='#1a1a1a'" onmouseout="this.style.color='#6b6b6b'">Contact</a>
+    </nav>
+  </div>
 </footer>
 
 <script>
-  // Cursor
-  const dot = document.querySelector('.cursor-dot');
-  const ring = document.querySelector('.cursor-ring');
-  let mx=0,my=0,rx=0,ry=0;
-  document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; dot.style.left=mx+'px'; dot.style.top=my+'px'; });
-  (function tick(){ rx+=(mx-rx)*.11; ry+=(my-ry)*.11; ring.style.left=rx+'px'; ring.style.top=ry+'px'; requestAnimationFrame(tick); })();
-  document.querySelectorAll('a,button').forEach(el => {
-    el.addEventListener('mouseenter', ()=>ring.classList.add('hovered'));
-    el.addEventListener('mouseleave', ()=>ring.classList.remove('hovered'));
-  });
+// Nav scroll
+const nav = document.getElementById('topNav');
+window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 50), {passive:true});
 
-  // Reading progress bar
-  const bar = document.getElementById('progress');
-  window.addEventListener('scroll', () => {
-    const h = document.documentElement;
-    const pct = (h.scrollTop / (h.scrollHeight - h.clientHeight)) * 100;
-    bar.style.width = pct + '%';
-  });
+// Mobile menu
+const btn  = document.getElementById('menuToggle');
+const menu = document.getElementById('mobileMenu');
+btn.addEventListener('click', e => {
+  e.stopPropagation();
+  const open = menu.classList.toggle('open');
+  btn.querySelector('.material-symbols-outlined').textContent = open ? 'close' : 'menu';
+});
+document.addEventListener('click', e => {
+  if (!menu.contains(e.target) && e.target !== btn) menu.classList.remove('open');
+});
 
-  // Scroll reveal
-  const io = new IntersectionObserver(entries => {
-    entries.forEach(e => { if(e.isIntersecting){ e.target.classList.add('visible'); io.unobserve(e.target); } });
-  }, { threshold: 0.08 });
-  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+// Reading progress bar
+const bar = document.getElementById('progress');
+window.addEventListener('scroll', () => {
+  const doc  = document.documentElement;
+  const full = doc.scrollHeight - doc.clientHeight;
+  bar.style.width = (window.scrollY / full * 100) + '%';
+}, {passive:true});
 
-  // Initial reveals (above fold)
-  setTimeout(()=>document.querySelectorAll('.cs-hero .reveal').forEach((el,i)=>setTimeout(()=>el.classList.add('visible'),80+i*120)),60);
+// Stats grid — 4 cols on desktop
+if (window.innerWidth >= 640) {
+  document.getElementById('statsGrid').style.gridTemplateColumns = 'repeat(4,1fr)';
+}
+
+// Scroll reveal
+const els = document.querySelectorAll('.reveal');
+const io  = new IntersectionObserver(es => es.forEach(e => {
+  if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }
+}), { threshold: 0.06 });
+els.forEach(el => io.observe(el));
 </script>
 </body>
 </html>

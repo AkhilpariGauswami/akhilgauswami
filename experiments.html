@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Experiments — Akhilpari Goswami</title>
+<meta name="description" content="Side experiments and concept explorations by Akhilpari Goswami."/>
+<script src="https://cdn.tailwindcss.com?plugins=forms"></script>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Epilogue:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23090909'/><text x='50%25' y='56%25' dominant-baseline='middle' text-anchor='middle' font-family='serif' font-size='20' font-style='italic' fill='%2300c8ff'>A</text></svg>">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{background:#efefed;color:#1a1a1a;font-family:'Epilogue',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 300,'GRAD' 0,'opsz' 24;display:inline-flex;align-items:center;line-height:1;vertical-align:middle}
+.px{padding-left:24px;padding-right:24px}
+.mw{max-width:1200px;margin-left:auto;margin-right:auto}
+@media(min-width:768px){.px{padding-left:80px;padding-right:80px}}
+
+.t-hero{font-family:'Instrument Serif',serif;font-style:italic;font-size:clamp(36px,5vw,56px);line-height:1.08;letter-spacing:-0.02em;font-weight:400}
+.t-section{font-family:'Instrument Serif',serif;font-style:italic;font-size:clamp(26px,3.5vw,38px);line-height:1.1;letter-spacing:-0.015em;font-weight:400}
+.t-lg{font-size:18px;line-height:1.7;font-weight:400}
+.t-md{font-size:16px;line-height:1.65;font-weight:400}
+.t-sm{font-size:15px;line-height:1.6;font-weight:400}
+.t-label{font-family:'JetBrains Mono',monospace;font-size:12px;line-height:1;letter-spacing:0.08em;font-weight:500}
+.t-micro{font-family:'JetBrains Mono',monospace;font-size:11px;line-height:1;letter-spacing:0.06em;font-weight:500}
+
+/* Nav */
+#topNav{position:fixed;top:0;width:100%;z-index:50;background:#efefed;border-bottom:1px solid #e0e0de;transition:background .3s}
+#topNav.scrolled{background:#f8f8f6}
+.nav-i{display:flex;align-items:center;justify-content:space-between;height:64px}
+.nav-link{position:relative;text-decoration:none}
+.nav-link::after{content:'';position:absolute;bottom:-2px;left:0;width:0;height:1px;background:#1a1a1a;transition:width .2s}
+.nav-link:hover::after{width:100%}
+#mobileMenu{display:none;flex-direction:column;gap:16px;padding:20px 24px 24px;background:#f8f8f6;border-top:1px solid #e0e0de}
+#mobileMenu.open{display:flex}
+
+.btn-p{display:inline-flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:0.08em;font-weight:500;background:#1a1a1a;color:#efefed;padding:10px 20px;border-radius:2px;text-decoration:none;transition:background .2s}
+.btn-p:hover{background:#333}
+
+/* Badges */
+.bdg{display:inline-flex;align-items:center;font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.07em;font-weight:700;text-transform:uppercase;padding:4px 8px;border-radius:2px}
+.bdg-done{background:rgba(0,200,255,.1);color:#008fb0;border:1px solid rgba(0,200,255,.3)}
+.bdg-early{background:rgba(176,120,0,.1);color:#8a6000;border:1px solid rgba(176,120,0,.35)}
+.bdg-pause{background:transparent;color:#6b6b6b;border:1px dashed #a0a0a0}
+.bdg-concept{background:transparent;color:#6b6b6b;border:1px dashed #a0a0a0}
+.bdg-on{background:rgba(255,107,53,.1);color:#cc4a1a;border:1px solid rgba(255,107,53,.35)}
+
+/* Built cards */
+.built-card{background:#f8f8f6;border:1px solid #e0e0de;border-radius:2px;padding:32px;display:grid;grid-template-columns:1fr;gap:24px;transition:background .2s}
+.built-card:hover{background:#f4f4f2}
+@media(min-width:768px){.built-card{grid-template-columns:1fr 1fr;gap:32px}}
+
+/* Concept card — dashed border via background-image trick */
+.concept-card{
+  border-radius:2px;padding:32px;display:flex;flex-direction:column;gap:20px;
+  transition:background .2s;
+  background-image:
+    repeating-linear-gradient(90deg,#c8c8c6 0,#c8c8c6 6px,transparent 0,transparent 14px),
+    repeating-linear-gradient(90deg,#c8c8c6 0,#c8c8c6 6px,transparent 0,transparent 14px),
+    repeating-linear-gradient(0deg,#c8c8c6 0,#c8c8c6 6px,transparent 0,transparent 14px),
+    repeating-linear-gradient(0deg,#c8c8c6 0,#c8c8c6 6px,transparent 0,transparent 14px);
+  background-size:14px 1px,14px 1px,1px 14px,1px 14px;
+  background-position:0 0,0 100%,0 0,100% 0;
+  background-repeat:repeat-x,repeat-x,repeat-y,repeat-y;
+}
+.concept-card:hover{background-color:rgba(248,248,246,.5)}
+
+/* Section divider */
+.sec-divider{display:flex;align-items:center;gap:12px;margin-bottom:32px}
+.sec-divider-line{flex:1;height:1px;background:#e0e0de}
+
+/* Stack tag */
+.stack-tag{font-family:'JetBrains Mono',monospace;font-size:10px;letter-spacing:.06em;font-weight:500;color:#6b6b6b;background:#eeeeec;border:1px solid #e0e0de;padding:4px 10px;border-radius:2px}
+
+/* Text link */
+.tlink{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.08em;font-weight:500;color:#1a1a1a;border-bottom:1px solid #1a1a1a;padding-bottom:1px;text-decoration:none;transition:color .2s,border-color .2s}
+.tlink:hover{color:#FF6B35;border-color:#FF6B35}
+
+/* Reveal */
+.reveal{opacity:0;transform:translateY(18px);transition:opacity .6s ease,transform .6s ease}
+.reveal.visible{opacity:1;transform:none}
+
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.pulse{animation:pulse 2s ease-in-out infinite}
+::selection{background:rgba(0,200,255,.18);color:#1a1a1a}
+
+@media(max-width:767px){
+  .desk-only{display:none!important}
+  #menuToggle{display:block!important}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ NAV ═══ -->
+<nav id="topNav">
+  <div class="px mw nav-i">
+    <a href="index.html" style="font-family:'Instrument Serif',serif;font-style:italic;font-size:20px;color:#1a1a1a;text-decoration:none;transition:color .2s" onmouseover="this.style.color='#FF6B35'" onmouseout="this.style.color='#1a1a1a'">Akhilpari Goswami</a>
+    <div class="desk-only" style="display:flex;align-items:center;gap:32px">
+      <a href="index.html#work"     class="nav-link t-label" style="color:#6b6b6b;transition:color .2s" onmouseover="this.style.color='#1a1a1a'" onmouseout="this.style.color='#6b6b6b'">Work</a>
+      <a href="index.html#thinking" class="nav-link t-label" style="color:#6b6b6b;transition:color .2s" onmouseover="this.style.color='#1a1a1a'" onmouseout="this.style.color='#6b6b6b'">Thinking</a>
+      <a href="index.html#about"    class="nav-link t-label" style="color:#6b6b6b;transition:color .2s" onmouseover="this.style.color='#1a1a1a'" onmouseout="this.style.color='#6b6b6b'">About</a>
+      <a href="resume.pdf" target="_blank" class="nav-link t-label" style="color:#6b6b6b;transition:color .2s" onmouseover="this.style.color='#1a1a1a'" onmouseout="this.style.color='#6b6b6b'">Résumé</a>
+      <a href="contact.html" class="btn-p">Get in Touch</a>
+    </div>
+    <button id="menuToggle" aria-label="Open menu" style="display:none;background:none;border:none;cursor:pointer;color:#1a1a1a;padding:4px">
+      <span class="material-symbols-outlined" style="font-size:22px">menu</span>
+    </button>
+  </div>
+  <div id="mobileMenu">
+    <a href="index.html#work"     class="t-label" style="color:#1a1a1a;text-decoration:none">Work</a>
+    <a href="index.html#thinking" class="t-label" style="color:#1a1a1a;text-decoration:none">Thinking</a>
+    <a href="index.html#about"    class="t-label" style="color:#1a1a1a;text-decoration:none">About</a>
+    <a href="resume.pdf"          class="t-label" style="color:#1a1a1a;text-decoration:none" target="_blank">Résumé</a>
+    <a href="contact.html" class="btn-p" style="text-align:center;text-decoration:none">Get in Touch</a>
+  </div>
+</nav>
+
+<!-- ═══ MAIN ═══ -->
+<main style="padding-top:64px">
+
+<!-- ── PAGE HEADER ── -->
+<section style="padding:80px 0 64px" class="px mw">
+  <div class="reveal">
+    <div class="t-micro" style="color:#a0a0a0;text-transform:uppercase;letter-spacing:.1em;margin-bottom:20px">
+      <a href="index.html" style="color:#a0a0a0;text-decoration:none;transition:color .2s" onmouseover="this.style.color='#1a1a1a'" onmouseout="this.style.color='#a0a0a0'">Portfolio</a>
+      &nbsp;<span class="material-symbols-outlined" style="font-size:13px;vertical-align:middle">chevron_right</span>&nbsp;
+      <span style="color:#1a1a1a">Experiments</span>
+    </div>
+    <h1 class="t-hero" style="margin-bottom:20px">Side Experiments</h1>
+    <p class="t-lg" style="color:#6b6b6b;max-width:600px">A collection of explorations, technical deep-dives, and side projects. Some are built and functional. Others remain conceptual frameworks for future work — questions I haven't found answers to yet.</p>
+  </div>
+</section>
+
+<!-- ── BUILT SECTION ── -->
+<section style="padding:0 0 64px" class="px mw">
+  <div class="sec-divider reveal">
+    <span class="t-label" style="color:#1a1a1a;text-transform:uppercase;white-space:nowrap">Built</span>
+    <div class="sec-divider-line"></div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:20px">
+
+    <!-- Plutus Bank -->
+    <div class="built-card reveal">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+          <h3 style="font-family:'Epilogue',sans-serif;font-size:22px;font-weight:700;color:#1a1a1a">Plutus Bank</h3>
+          <span class="bdg bdg-pause">Paused</span>
+        </div>
+        <div class="t-micro" style="color:#a0a0a0;text-transform:uppercase;letter-spacing:.08em">Fintech / Web3 / Core Banking</div>
+        <p class="t-md" style="color:#6b6b6b">A prototype for a decentralised core banking ledger, aiming to bridge traditional fiat operations with smart contract execution. Built to test the latency and finality of cross-chain settlements.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          <span class="stack-tag">Rust</span>
+          <span class="stack-tag">Solidity</span>
+          <span class="stack-tag">PostgreSQL</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;padding-left:0" id="pbLearn">
+        <span class="t-micro" style="color:#1a1a1a;text-transform:uppercase;border-bottom:1px solid #e0e0de;padding-bottom:8px;display:inline-block">What I Learned</span>
+        <p class="t-sm" style="color:#6b6b6b;font-style:italic">"The hardest part isn't the cryptography; it's state management between synchronous legacy systems and asynchronous blockchain layers. Handling edge cases in finality reversal was a major architectural headache."</p>
+        <p class="t-sm" style="color:#6b6b6b">Paused after reaching the cross-chain settlement prototype stage. The state management complexity required more time than the experiment warranted at that point.</p>
+      </div>
+    </div>
+
+    <!-- Hands of Cards -->
+    <div class="built-card reveal">
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+          <h3 style="font-family:'Epilogue',sans-serif;font-size:22px;font-weight:700;color:#1a1a1a">Hands of Cards</h3>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span class="pulse" style="width:6px;height:6px;border-radius:50%;background:#FF6B35;display:inline-block"></span>
+            <span class="bdg bdg-on">Ongoing</span>
+          </div>
+        </div>
+        <div class="t-micro" style="color:#a0a0a0;text-transform:uppercase;letter-spacing:.08em">Game Design / State Machines</div>
+        <p class="t-md" style="color:#6b6b6b">An engine for simulating complex card game mechanics and evaluating probability matrices. Currently focusing on building a deterministic state machine for resolving simultaneous card effects.</p>
+        <div style="display:flex;flex-wrap:wrap;gap:8px">
+          <span class="stack-tag">TypeScript</span>
+          <span class="stack-tag">XState</span>
+          <span class="stack-tag">Canvas API</span>
+        </div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px">
+        <span class="t-micro" style="color:#1a1a1a;text-transform:uppercase;border-bottom:1px solid #e0e0de;padding-bottom:8px;display:inline-block">What I Learned</span>
+        <p class="t-sm" style="color:#6b6b6b;font-style:italic">"Modelling 'interrupts' in a turn-based system requires a robust stack architecture. Abstracting game rules from the UI rendering loop improved performance dramatically and made the logic testable in isolation."</p>
+        <p class="t-sm" style="color:#6b6b6b">The biggest insight: card game logic is a state machine problem, not a rendering problem. Separating the two made everything simpler.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── CONCEPT SECTION ── -->
+<section style="padding:0 0 96px" class="px mw">
+  <div class="sec-divider reveal">
+    <span class="t-label" style="color:#a0a0a0;text-transform:uppercase;white-space:nowrap">Concept</span>
+    <div class="sec-divider-line" style="background-image:repeating-linear-gradient(90deg,#c8c8c6 0,#c8c8c6 6px,transparent 0,transparent 14px);background-size:14px 1px;background-repeat:repeat-x;height:1px;background-color:transparent"></div>
+  </div>
+
+  <p class="t-md reveal" style="color:#6b6b6b;margin-bottom:32px;max-width:560px">These aren't projects. They're questions. Each one started as a "what if" that I couldn't stop thinking about. Some may become projects. Some may stay questions forever.</p>
+
+  <div style="display:flex;flex-direction:column;gap:20px">
+
+    <!-- Sanskrit Programming Language -->
+    <div class="concept-card reveal">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+        <h3 style="font-family:'Epilogue',sans-serif;font-size:20px;font-weight:700;color:#1a1a1a">Sanskrit Programming Language</h3>
+        <span class="bdg bdg-concept">Concept</span>
+      </div>
+      <div class="t-micro" style="color:#a0a0a0;text-transform:uppercase;letter-spacing:.08em">Language Design / Parser / Linguistics</div>
+      <div style="background:#f4f4f2;padding:20px;border-left:2px solid #1a1a1a">
+        <span class="t-micro" style="color:#1a1a1a;text-transform:uppercase;display:block;margin-bottom:8px;letter-spacing:.08em">What I'm Figuring Out</span>
+        <p class="t-sm" style="color:#6b6b6b;font-style:italic">"How can the strict grammatical rules of Panini's Ashtadhyayi be mapped directly to an AST? Can inflectional morphology replace traditional syntactical symbols? Sanskrit was arguably the first formally specified language — so why not a programming one?"</p>
+      </div>
+      <p class="t-micro" style="color:#a0a0a0">Currently researching formal grammar structures and lexical analysis approaches. Reading: Panini's Ashtadhyayi, ANTLR documentation, and Dragon Book.</p>
+    </div>
+
+    <!-- Indian Anime -->
+    <div class="concept-card reveal">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+        <h3 style="font-family:'Epilogue',sans-serif;font-size:20px;font-weight:700;color:#1a1a1a">Indian Anime</h3>
+        <span class="bdg bdg-concept">Concept</span>
+      </div>
+      <div class="t-micro" style="color:#a0a0a0;text-transform:uppercase;letter-spacing:.08em">Visual Storytelling / Animation Pipeline</div>
+      <div style="background:#f4f4f2;padding:20px;border-left:2px solid #1a1a1a">
+        <span class="t-micro" style="color:#1a1a1a;text-transform:uppercase;display:block;margin-bottom:8px;letter-spacing:.08em">What I'm Figuring Out</span>
+        <p class="t-sm" style="color:#6b6b6b;font-style:italic">"What does a distinctively Indian visual animation style look like, wholly distinct from Western and Japanese tropes? How can classical Pattachitra and Madhubani motifs be integrated into modern cel-shaded pipelines without becoming pastiche?"</p>
+      </div>
+      <p class="t-micro" style="color:#a0a0a0">Gathering reference materials and drafting preliminary character style guides. Exploring Blender and Krita for a prototype short.</p>
+    </div>
+
+    <!-- Personal OS in Sanskrit -->
+    <div class="concept-card reveal">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px">
+        <h3 style="font-family:'Epilogue',sans-serif;font-size:20px;font-weight:700;color:#1a1a1a">Personal OS in Sanskrit</h3>
+        <span class="bdg bdg-concept">Concept</span>
+      </div>
+      <div class="t-micro" style="color:#a0a0a0;text-transform:uppercase;letter-spacing:.08em">Systems Architecture / CLI Design</div>
+      <div style="background:#f4f4f2;padding:20px;border-left:2px solid #1a1a1a">
+        <span class="t-micro" style="color:#1a1a1a;text-transform:uppercase;display:block;margin-bottom:8px;letter-spacing:.08em">What I'm Figuring Out</span>
+        <p class="t-sm" style="color:#6b6b6b;font-style:italic">"Designing a command-line interface where commands are structured as Sanskrit sutras. How do we build a terminal emulator that natively supports Devanagari ligatures efficiently? What would a file system look like whose hierarchy is modelled on the Vedic knowledge classification system?"</p>
+      </div>
+      <p class="t-micro" style="color:#a0a0a0">Exploring custom font rendering engines, terminal frameworks, and the philosophical underpinnings of knowledge categorisation in Indian epistemology.</p>
+    </div>
+
+  </div>
+</section>
+
+</main>
+
+<!-- ═══ FOOTER ═══ -->
+<footer style="background:#f8f8f6;border-top:1px solid #e0e0de">
+  <div class="px mw" style="padding-top:32px;padding-bottom:32px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px">
+    <a href="index.html" class="tlink" style="display:inline-flex;align-items:center;gap:6px">
+      <span class="material-symbols-outlined" style="font-size:14px">arrow_back</span> Back to Portfolio
+    </a>
+    <p class="t-micro" style="color:#a0a0a0">© 2026 Akhilpari Goswami. Built with intent, not just code.</p>
+  </div>
+</footer>
+
+<script>
+const nav = document.getElementById('topNav');
+window.addEventListener('scroll', () => nav.classList.toggle('scrolled', window.scrollY > 50), {passive:true});
+
+const btn  = document.getElementById('menuToggle');
+const menu = document.getElementById('mobileMenu');
+btn.addEventListener('click', e => {
+  e.stopPropagation();
+  const open = menu.classList.toggle('open');
+  btn.querySelector('.material-symbols-outlined').textContent = open ? 'close' : 'menu';
+});
+document.addEventListener('click', e => {
+  if (!menu.contains(e.target) && e.target !== btn) menu.classList.remove('open');
+});
+
+// Add desktop border on learned column
+if (window.innerWidth >= 768) {
+  document.getElementById('pbLearn').style.borderLeft = '1px solid #e0e0de';
+  document.getElementById('pbLearn').style.paddingLeft = '32px';
+}
+
+const els = document.querySelectorAll('.reveal');
+const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); io.unobserve(e.target); }}), { threshold: 0.06 });
+els.forEach(el => io.observe(el));
+</script>
+</body>
+</html>
