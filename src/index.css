@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+/* --- Fonts ---
+   Visual read of the design files (text is flattened to vector paths, so no
+   font-family metadata survives — this is a match by letterform, not a
+   certainty). Every heading — hero, "Projects", "Experiments", "My Journey",
+   "Get in Touch", case-study section heads — is set in a BOLD, high-contrast
+   serif with dramatic thick/thin stroke transitions. That rules out
+   Instrument Serif (the old display face): it only ships Regular + Italic,
+   no bold weight, and reads much lighter/quieter than what's in these files.
+   Playfair Display at Bold/Black is the closest real match to that weight
+   and contrast. Body and label text show nothing that contradicts the
+   existing Epilogue / JetBrains Mono pairing, so those carry over unchanged.
+   If you want certainty rather than a visual match, the Figma source still
+   has live text layers — the font panel there will give you the exact name
+   in seconds. */
+
+@theme {
+  /* Type */
+  --font-display: 'Playfair Display', serif;
+  --font-body: 'Epilogue', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* Color — extracted directly from the new Figma/Stitch SVG exports */
+  --color-ink: #191C1D;         /* headings, primary text */
+  --color-body: #464555;        /* paragraph text */
+  --color-muted: #777587;       /* secondary / meta text */
+  --color-muted-2: #5C6274;     /* tertiary text, timestamps */
+
+  --color-primary: #3525CD;     /* core accent — buttons, links, active states */
+  --color-primary-hover: #4F46E5;
+  --color-primary-deep: #0F0069; /* deep indigo, for dark accents / high-contrast moments */
+
+  --color-surface: #F8F9FA;     /* page background */
+  --color-surface-2: #F3F4F5;   /* card / panel background */
+  --color-surface-3: #EDEEEF;   /* nested panel background */
+  --color-surface-4: #E7E8E9;   /* hover / pressed surface */
+
+  --color-border: #C7C4D8;      /* default border, usually used at reduced opacity */
+  --color-border-2: #E1E3E4;    /* quieter divider */
+
+  --color-tint: #E2DFFF;        /* chip / tag background */
+  --color-tint-2: #DAD7FF;      /* chip / tag background, alt */
+  --color-tint-blue: #D9DFF5;   /* chip / tag background, cool alt */
+}
+
+body {
+  background-color: var(--color-surface);
+  color: var(--color-body);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Respect reduced-motion preferences site-wide */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
