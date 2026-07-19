@@ -7,29 +7,27 @@
 // deliberate TODOs. Nothing here should ship as-is. KnightCraving's real
 // case-study content already exists in the old case_study_kc.html — port
 // it into the fields below rather than rewriting from scratch.
-//
-// repo links intentionally keep the "Goswami" GitHub URL — that's the
-// account username, unrelated to the "Gauswami" display-name spelling.
+
 
 export const projects = [
   {
     slug: 'knightcraving',
     name: 'KnightCraving',
     oneLiner: 'Campus food price comparison tool.',
-    status: 'TODO', // e.g. "Live", "In Progress"
-    tags: ['TODO'],
+    status: 'Live', 
+    tags: ['Food', 'Price Comparison', 'Campus Life'],
     thumbnail: null, // /assets/projects/knightcraving-thumb.png
     links: {
       caseStudy: '/work/knightcraving',
       demo: null,
-      repo: 'https://github.com/AkhilpariGoswami',
+      repo: 'https://github.com/AkhilpariGauswami/KnightCraving',
     },
     caseStudy: {
-      role: 'TODO',
+      role: 'Owner & Lead Developer', // TODO: confirm
       timeline: 'TODO',
-      stack: ['TODO'],
+      stack: ['React', 'Node.js', 'Express', 'MongoDB'], // TODO: confirm
       problem:
-        'TODO — port over from case_study_kc.html rather than rewriting; that copy already leads with the problem, not an overview.',
+        'People waste time switching between Zomato and Swiggy hunting for the best deal. KnightCraving instantly compares food prices across platforms so users choose smarter — in seconds.',
       whyItMatters: 'TODO',
       research: 'TODO',
       keyInsights: [
@@ -51,16 +49,16 @@ export const projects = [
     slug: 'house-service',
     name: 'House Service',
     oneLiner: 'Local home services marketplace.',
-    status: 'TODO',
-    tags: ['TODO'],
+    status: 'In Progress',
+    tags: ['Home Services', 'Marketplace', 'Local'],
     thumbnail: null,
     links: {
       caseStudy: '/work/house-service',
       demo: null,
-      repo: 'https://github.com/AkhilpariGoswami',
+      repo: 'https://github.com/AkhilpariGauswami/LocalLink',
     },
     caseStudy: {
-      role: 'TODO',
+      role: 'Owner & Lead Developer', // TODO: confirm
       timeline: 'TODO',
       stack: ['TODO'],
       problem: 'TODO — no case study written yet anywhere (confirmed gap).',

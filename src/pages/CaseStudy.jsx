@@ -12,7 +12,7 @@ export default function CaseStudy() {
 
   if (!project) {
     return (
-      <section className="mx-auto max-w-[1200px] px-8 py-28 text-center">
+      <section className="mx-auto max-w-300 px-8 py-28 text-center">
         <h1 className="font-display text-4xl font-bold italic text-ink">Project not found</h1>
         <Link to="/" className="mt-6 inline-block font-body text-primary hover:underline">
           ← Back to home
@@ -29,7 +29,7 @@ export default function CaseStudy() {
   return (
     <article>
       {/* Hero */}
-      <section className="mx-auto max-w-[900px] px-8 pb-12 pt-20 text-center md:pt-28">
+      <section className="mx-auto max-w-225 px-8 pb-12 pt-20 text-center md:pt-28">
         {project.status && (
           <span className="inline-flex items-center rounded-full bg-surface-3 px-4 py-1.5 font-mono text-xs text-body">
             {project.status === 'TODO' ? <Placeholder>status, e.g. "Shipped v1.0"</Placeholder> : project.status}
@@ -55,12 +55,12 @@ export default function CaseStudy() {
       </section>
 
       {/* Hero image */}
-      <div className="mx-auto flex aspect-[16/7] max-w-[1200px] items-center justify-center rounded-2xl border border-dashed border-border bg-surface-2 px-8">
+      <div className="mx-auto flex aspect-16/7 max-w-300 items-center justify-center rounded-2xl border border-dashed border-border bg-surface-2 px-8">
         <p className="font-mono text-xs text-muted">Product screenshot / hero shot goes here</p>
       </div>
 
       {/* Role / Timeline / Stack strip */}
-      <section className="mx-auto max-w-[1200px] border-b border-border-2 px-8 py-10">
+      <section className="mx-auto max-w-300 border-b border-border-2 px-8 py-10">
         <div className="grid grid-cols-1 gap-8 sm:grid-cols-3">
           <MetaBlock label="Role" value={cs.role} />
           <MetaBlock label="Timeline" value={cs.timeline} />
@@ -75,7 +75,7 @@ export default function CaseStudy() {
         </div>
       </section>
 
-      <div className="mx-auto max-w-[800px] space-y-20 px-8 py-20">
+      <div className="mx-auto max-w-200 space-y-20 px-8 py-20">
         <Section title="The Problem Space" body={cs.problem} />
 
         <div className="rounded-2xl bg-surface-2 p-8">
@@ -154,7 +154,7 @@ export default function CaseStudy() {
       </div>
 
       {/* Prev / Next */}
-      <nav className="mx-auto flex max-w-[1200px] items-center justify-between border-t border-border-2 px-8 py-10">
+      <nav className="mx-auto flex max-w-300 items-center justify-between border-t border-border-2 px-8 py-10">
         <Link to={`/work/${prev.slug}`} className="group flex items-center gap-2 font-body text-body hover:text-primary">
           <ArrowLeft size={16} className="transition-transform group-hover:-translate-x-1" />
           <span>
