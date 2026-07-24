@@ -4,7 +4,79 @@ React rebuild of the portfolio, based on the new Figma/Stitch design export
 (navbar, footer, home hero/projects/experiments, journey page, case study
 template, get-in-touch page).
 
-## Latest round of fixes
+## This pass: compared against the v0/Next.js export, merged the good parts
+
+A parallel `design-system-interface` export (Next.js + TypeScript + shadcn,
+generated via v0.app from the same design file) was compared against this
+codebase. Verdict: it shipped the design file's fake demo content completely
+untouched — "Nexus Enterprise Suite," a fabricated career history at "Tech
+Innovators Inc.," and (worth calling out directly) the name spelled two
+different ways on the same page: "Akhilpari Gauswami" in the nav, "Akhil Pari
+Goswami" in the hero and footer. It also had two real bugs: the nav's
+active-state check compared `usePathname()` against a hash-fragment href, so
+Projects/Experiments could never highlight (this codebase already avoided
+that by using scroll-spy — see below); and its experiments section
+destructured a fixed `[featured, second, third, archived]` from the array,
+which throws with fewer than 4 items — i.e. with your actual 2.
+
+Kept from this codebase rather than rebuilding on the other stack: the real
+project names, the honest `Placeholder` pattern, the bug fixes below, and
+the Vite/React Router setup itself (no server-rendering needs here, so
+Next.js would be net-new complexity for no real benefit). Ported over: the
+idea of per-page SEO titles, which the Next.js version got for free via
+`generateMetadata` and this one didn't have — see `useDocumentTitle` below.
+
+**Changes this pass:**
+
+- `data/projects.js`: "House Service" renamed to **LocalLink** (current
+  name) — slug, route, and case-study links all updated to match
+- KnightCraving: richer one-liner, real tags, and the `v1.0`/`v1.1`/`v1.2`
+  version-journey labels filled in (the *labels* are real; what changed in
+  each version is still TODO). Added a named key-insight slot for
+  **Synchronized Selection** — the actual UX mechanic behind the roadmap —
+  since it's the single most distinctive, interview-worthy detail this case
+  study has and it wasn't surfaced anywhere before
+  - **Fixed a bug this introduced:** the longer `"TODO — <hint>"` strings
+    now used throughout `projects.js` weren't getting the dashed-underline
+    `Placeholder` treatment, because several spots in `CaseStudy.jsx` checked
+    `value === 'TODO'` (exact match only) instead of `.startsWith('TODO')`.
+    That would've rendered raw `"TODO — what shipped in..."` as if it were
+    finished copy. Consolidated every check in that file onto one
+    `isTodo()`/`stripTodo()` helper pair so this can't drift out of sync
+    again as more hints get added.
+- `data/experiments.js`: real tags for Plutus Bank (Banking, Simulation) and
+  Hands of Cards (Multiplayer, Game) — descriptions were already accurate,
+  left as-is
+- `pages/Journey.jsx`: rebuilt with real milestones — GEC Rajkot →
+  FICE (with Microsoft, climate prediction) → CSR Box (AI automation) →
+  KnightCraving → LocalLink → EA Product Management certification (Forage,
+  **July 2025** — the one date known for certain) → **accepted offer at
+  Grumble Info Tech** (Frontend Developer / Jr. Software Engineer, starting
+  June 2026). Exact dates for everything else are marked TODO — the shape
+  and every named milestone are real, the ordering is a best guess pending
+  your confirmation
+- `pages/Contact.jsx`: "Whether it's an internship..." → "Whether it's a
+  product or frontend role..." — the internship-seeking framing was stale
+  now that Grumble Info Tech is accepted; you're targeting PM/UI-UX/frontend
+  roles at remote-friendly companies beyond it, per the Journey update above
+- New `hooks/useDocumentTitle.js`: sets `document.title` (and meta
+  description) per page, restoring the previous value on unmount. This is
+  the lightweight equivalent of what Next.js's `generateMetadata` gave the
+  other version for free. It does **not** solve per-route social-preview
+  (`og:`) tags — that needs actual SSR/prerendering, which is a bigger
+  decision (bring in Next.js, or add a prerender step to this Vite setup)
+  and wasn't made unilaterally here
+
+**Deliberately not carried over from the Next.js version:** its images
+(`project-aura.png`, `project-nexus.png`, etc. — all tied to the fake
+projects, not applicable) and its profile photo, which reads as a generic
+stock headshot rather than an actual photo of Akhil — worth confirming
+either way before it ends up on a live site as-is. Dark mode was also left
+out: the other version had the OKLCH token infrastructure for it, but it
+wasn't something either build was asked for, so adding it here would've been
+a scope decision made on your behalf rather than a fix.
+
+## Earlier round of fixes
 
 - Navbar active-dot bug fixed — Projects/Experiments now use scroll-spy
   (IntersectionObserver) instead of having no active-state logic at all
@@ -56,9 +128,11 @@ src/
                   Decision Log the original design didn't have
   data/
     projects.js     Full case-study schema for both KnightCraving and
-                    House Service — ONE template serves both
+                    LocalLink — ONE template serves both
     experiments.js  Plutus Bank + Hands of Cards only (the two real,
                     live ones — not the idea-stage ones)
+  hooks/
+    useDocumentTitle.js  Per-page <title> + meta description
 ```
 
 ## Toggling "Live Demo" on/off
@@ -93,13 +167,23 @@ it is Akhil's real content, so none of it was carried into the code.
 
 ## Known TODOs
 
-- [ ] Real project data in `src/data/projects.js` (KnightCraving content
-      exists in the old `case_study_kc.html` — port it over rather than
-      rewriting from scratch)
-- [ ] House Service case study content (doesn't exist yet anywhere)
-- [ ] Journey page — exact dates + the one decision worth telling per milestone
+- [ ] KnightCraving case-study narrative — problem/research/decision
+      log/results still TODO; content exists in the old `case_study_kc.html`,
+      port it over rather than rewriting from scratch. The `v1.0`/`v1.1`/`v1.2`
+      labels and the Synchronized Selection mechanic are already real —
+      the *why* behind each is what's missing
+- [ ] LocalLink case study content (doesn't exist yet anywhere)
+- [ ] Journey page — exact dates for every milestone, and confirm the
+      ordering (FICE vs. CSR Box vs. the two projects isn't confirmed
+      chronological, just the order the facts were given in)
+- [ ] Journey intro paragraph — a real starting draft is in place
+      ("Visionary Orchestrator"-based) but it's a hint to rewrite in your
+      own voice, not finished copy
 - [ ] Wire Contact form to Formspree/EmailJS (stub is in place)
 - [ ] Add `resume.pdf` and real profile/product images — every dashed-border
       box and `Placeholder`-wrapped line in the UI marks a spot that needs one
+- [ ] Real social links — LinkedIn and Read.cv are still `/TODO`
 - [ ] Confirm Playfair Display is actually right by checking the Figma
       source's text panel
+- [ ] Decide on dark mode / dropping it — infrastructure exists in the
+      compared Next.js version if wanted later, not built here

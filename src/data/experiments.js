@@ -9,7 +9,7 @@ export const experiments = [
     slug: 'plutus-bank',
     name: 'Plutus Bank',
     description: 'Explored transaction state management.',
-    tags: ['TODO'],
+    tags: ['Banking', 'Simulation'],
     status: null, // e.g. "WIP", "Archived"
     links: { demo: null, repo: null },
   },
@@ -17,7 +17,7 @@ export const experiments = [
     slug: 'hands-of-cards',
     name: 'Hands of Cards',
     description: 'Explored real-time multiplayer decision logic.',
-    tags: ['TODO'],
+    tags: ['Multiplayer', 'Game'],
     status: null,
     links: { demo: null, repo: null },
   },

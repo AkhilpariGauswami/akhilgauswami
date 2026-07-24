@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Mail, Send, Download, ArrowUpRight } from 'lucide-react';
 import Button from '../components/ui/Button';
+import useDocumentTitle from '../hooks/useDocumentTitle';
 
 // GitHub URL intentionally kept as "Goswami" — see Footer.jsx for why.
 const DIRECT_LINKS = [
@@ -12,6 +13,11 @@ const DIRECT_LINKS = [
 export default function Contact() {
   const [form, setForm] = useState({ name: '', email: '', subject: '', message: '' });
   const [status, setStatus] = useState('idle'); // idle | sending | sent | error
+
+  useDocumentTitle(
+    'Get in Touch',
+    'Product and frontend roles, freelance work, or just an idea worth talking through.'
+  );
 
   function handleChange(e) {
     setForm((f) => ({ ...f, [e.target.name]: e.target.value }));
@@ -56,8 +62,8 @@ export default function Contact() {
       <h1 className="mt-6 font-display text-5xl font-black italic text-ink md:text-6xl">Get in Touch</h1>
 
       <p className="mt-6 max-w-xl font-body text-lg text-body">
-        Whether it's an internship, a freelance project, or just a product
-        idea worth talking through — I'd like to hear about it.
+        Whether it's a product or frontend role, a freelance project, or just
+        an idea worth talking through — I'd like to hear about it.
       </p>
 
       <div className="mt-14 grid grid-cols-1 gap-12 md:grid-cols-[1fr_1.3fr]">

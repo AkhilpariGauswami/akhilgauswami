@@ -6,6 +6,12 @@ import ExperimentCard from '../components/sections/ExperimentCard';
 import { projects } from '../data/projects';
 import { experiments } from '../data/experiments';
 
+// Home intentionally does NOT call useDocumentTitle: index.html already sets
+// the right default ("Akhilpari Gauswami — Product Engineer"), and the other
+// pages' cleanup restores that same default on unmount when you navigate
+// back here. Calling the hook here would need name-first word order, which
+// doesn't match the "Page — Name" pattern the hook uses for every subpage.
+
 export default function Home() {
   return (
     <>
